@@ -17,17 +17,29 @@ const userSchema=new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['User',"Admin"],
+        enum:["Admin", "Seller", "Buyer"],
+        default:"Buyer",
         required:true
     },
-    subcriptions:{
-        type:mongoose.Schema.ObjectId,
-        ref:"Trade"
+    Address:{
+        type:String
+    },
+    Phone:{
+        type:String
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
+    Profile_photo:{
+        type:String
     }
+   
 },{
     timestamps:true
 })
 
+userSchema.index({email:1})
 
 const User=mongoose.model("User", userSchema);
 

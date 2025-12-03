@@ -1,5 +1,5 @@
 import express from "express";
-import { connectionDb } from './src/config/db.config.js';
+import { connectionDb } from './src/config/mongo_db_connection.js';
 import dotenv from 'dotenv';
 import Authrouter from './src/routers/Auth.router.js';
 import cookieParser from 'cookie-parser';

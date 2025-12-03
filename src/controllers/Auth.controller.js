@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 export async function signup(req, res, next) {
   try {
-    const { name, email, password, role, subscriptions } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password || !role) {
       throw new CustomError("All fields are required", 400);
@@ -24,7 +24,6 @@ export async function signup(req, res, next) {
       email,
       passwordHash: hashedPassword,
       role,
-      subscriptions: subscriptions || null,
     });
 
     await newUser.save();
