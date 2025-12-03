@@ -1,0 +1,43 @@
+import express from "express";
+import { connectionDb } from './src/config/db.config.js';
+import dotenv from 'dotenv';
+import Authrouter from './src/routers/Auth.router.js';
+import cookieParser from 'cookie-parser';
+import http from 'http';
+
+import morgan from 'morgan';
+import cors from 'cors';
+
+
+dotenv.config();
+
+const PORT = process.env.PORT||5002
+const app = express();
+const server = http.createServer(app);
+
+
+app.use(express.json());
+
+app.use(cors({
+    origin: "http://localhost:3000", 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
+app.use(cookieParser());
+
+app.use(morgan(':method :url :status :response-time ms', {
+    stream: {
+      write: (message) => logger.info(message.trim())
+    }
+  }));
+  
+app.use("/api/auth", Authrouter);
+
+
+
+
+
+server.listen(PORT, () => {
+    connectionDb();
+    console.log(`Server running at port ${PORT}`);
+});

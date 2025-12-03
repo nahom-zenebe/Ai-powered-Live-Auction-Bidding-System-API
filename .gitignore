@@ -1,0 +1,64 @@
+# -----------------------------
+# Chrome Extension Essentials
+# -----------------------------
+
+# Do NOT commit build output
+dist/
+build/
+out/
+release/
+packaged/
+*.zip
+*.crx
+
+# Do NOT commit secret keys
+keys/
+*.pem
+
+# If using TypeScript
+*.tsbuildinfo
+
+# -----------------------------
+# Node / Dependency Files
+# -----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+.env
+.env.*
+
+
+# -----------------------------
+# OS / Editor Files
+# -----------------------------
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.log
+
+# Compiled / Cache
+*.bak
+*.tmp
+*.lock
+.cache/
+.tmp/
+coverage/
