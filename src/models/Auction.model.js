@@ -37,24 +37,10 @@ const AuctionSchema = new mongoose.Schema({
         ref:"User",
         required:true
     },
-    bids: [
-        {
-          bidder: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-          },
-          amount: {
-            type: Number,
-            required: true,
-            min: 0,
-          },
-          time: {
-            type: Date,
-            default: Date.now,
-          },
-        },
-      ],
+    bids: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Bid"
+    },
   
     min_bid:{
         type:Number,
