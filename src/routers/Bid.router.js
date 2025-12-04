@@ -7,9 +7,9 @@ const router=express()
 
 router.post("/", createBid)
 router.get("/",getAllBids)
-router.get('/:AuctionId',getSingleBid)
-router.delete('/:AuctionId',deleteBid)
-router.put('/:AuctionId',updateBid)
+router.get('/:BidId',getSingleBid)
+router.delete('/:BidId',deleteBid)
+router.put('/:BidId',updateBid)
 
 
 

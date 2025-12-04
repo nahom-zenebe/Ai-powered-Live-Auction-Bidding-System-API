@@ -7,9 +7,9 @@ const router=express()
 
 router.post("/",createCategory)
 router.get("/",getAllCategories)
-router.get('/:AuctionId',getSingleCategory)
-router.delete('/:AuctionId',deleteCategory)
-router.put('/:AuctionId',updateCategory)
+router.get('/:CategoryId',getSingleCategory)
+router.delete('/:CategoryId',deleteCategory)
+router.put('/:CategoryId',updateCategory)
 
 
 

@@ -5,6 +5,7 @@ import Authrouter from './src/routers/Auth.router.js';
 import Auctionrouter from './src/routers/Auction.router.js'
 import Categoryrouter from './src/routers/Category.router.js'
 import Bidrouter from './src/routers/Bid.router.js'
+import Transcationrouter from './src/routers/Transaction.router.js'
 import cookieParser from 'cookie-parser';
 import http from 'http';
 
@@ -38,6 +39,7 @@ app.use("/api/auth", Authrouter);
 app.use("/api/auction",Auctionrouter)
 app.use("/api/category",Categoryrouter )
 app.use("/api/Bid",Bidrouter)
+app.use("/api/Transcation",Transcationrouter)
 
 
 
