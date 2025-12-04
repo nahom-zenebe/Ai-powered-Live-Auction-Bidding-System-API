@@ -56,6 +56,34 @@ export async function signup(req, res, next) {
   }
 }
 
+
+export async function VerifyUser(req,res,next){
+  try{
+
+    const{ Address,Phone,age, GovermentId}=req.body
+    const {UserId}=req.params
+
+    if(!Address||!Phone||!age||!GovermentId){
+      throw new CustomError("all field are required")
+    }
+
+    const findUser=await User.findByIdAndUpdate(UserId,{Address,Phone,age, GovermentId},{new:true})
+
+    if (!findUser) {
+      throw new CustomError("User not found", 404);
+    }
+    findUser.isVerified=true
+
+    await findUser.save()
+
+    res.status(200).json(findUser)
+
+
+  }
+  catch(error){
+next(error)
+  }
+}
 export async function login(req, res, next) {
   try {
     const { email, password } = req.body;

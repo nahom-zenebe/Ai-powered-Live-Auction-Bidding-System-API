@@ -108,6 +108,36 @@ export async function getSingleAuction(req, res, next) {
   }
 }
 
+export async function getAuctionByStatus(req,res,next){
+  try{
+    const {status}=req.query;
+    if(!status){
+      throw("no status is found",400)
+    }
+
+    const auctions = await Auction.find({ status });
+
+    if(! auctions){
+      throw("no Auction is found",400)
+    }
+    res.status(200).json(auctions)
+
+  }
+  catch(error){
+    next(error)
+  }
+}
+
+export async function  VerifyAuction(req,res,next){
+  try{
+
+  }
+  catch(error){
+
+  }
+}
+
+
 // ===============================
 // UPDATE AUCTION
 // ===============================

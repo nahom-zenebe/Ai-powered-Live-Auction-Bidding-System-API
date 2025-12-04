@@ -1,5 +1,6 @@
 import Bid from "../models/Bid.model.js";
 import CustomError from "../utils/CustomError.js";
+import Auction from '../models/Auction.model.js';
 
 // ===============================
 // CREATE BID
@@ -12,13 +13,27 @@ export async function createBid(req, res, next) {
       throw new CustomError("auction_id, user_id, and bid_amount are required", 400);
     }
 
+    const Auctions=await Auction.findById(auction_id)
+    if(Auctions.end_time<=Date.now()){
+         throw new CustomError("the time has ended",400)
+    }
+
     const bid = new Bid({
       auction_id,
       user_id,
       bid_amount,
     });
 
+
+
     await bid.save();
+
+    if(bid_amount <= Auction.current_bid|| bid_amount < Auction.min_bid){
+      throw new CustomError("Bid too low",400);
+    }
+    Auction.current_bid = bid_amount;
+    Auction.current_winner =  user_id;
+    Auction.bids=bid
 
     io.emit("new_bid",bid)
 

@@ -27,6 +27,14 @@ const userSchema=new mongoose.Schema({
     Phone:{
         type:String
     },
+    age:{
+        type:Number,
+        minLength:18
+    },
+    GovermentId:{
+        type:String
+
+    },
     isVerified:{
         type:Boolean,
         default:false

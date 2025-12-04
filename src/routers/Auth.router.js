@@ -1,5 +1,5 @@
 import express from 'express'
-import { login, signup } from '../controllers/Auth.controller.js'
+import { login, signup,VerifyUser } from '../controllers/Auth.controller.js'
 
 const router=express()
 
@@ -7,6 +7,7 @@ const router=express()
 
 router.post("/signup",signup)
 router.post("/login",login)
+router.get("/verify/:id",VerifyUser)
 
 
 
