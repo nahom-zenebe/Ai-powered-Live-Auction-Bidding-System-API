@@ -1,5 +1,5 @@
 import express from 'express'
-import { createBid,deleteBid,updateBid,getSingleBid,getAllBids} from '../controllers/Auction.controllers.js'
+import { createBid,deleteBid,updateBid,getSingleBid,getAllBids} from '../controllers/Bid.controllers.js'
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 
 const router=express()

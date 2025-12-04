@@ -5,7 +5,7 @@ const liveAuctions=new Map();
 
 
 
-export const AddAuctionToCountdown=(auction)=>{
+export const addAuctionToCountdown=(auction)=>{
     liveAuctions.set(auction._id.toString(),new Date(auction.end_time))
 }
 

@@ -1,5 +1,5 @@
 import express from 'express'
-import {createCategory,getAllCategories,getSingleCategory,updateCategory,deleteCategory} from '../controllers/Auction.controllers.js'
+import {createCategory,getAllCategories,getSingleCategory,updateCategory,deleteCategory} from '../controllers/Category.controllers.js'
 
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 const router=express()

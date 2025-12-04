@@ -91,7 +91,7 @@ AuctionSchema.index({ end_time: 1 });
 
 
 
-const Auction=model.schema("Auction",AuctionSchema)
+const Auction=mongoose.model("Auction",AuctionSchema)
 
 
 export default Auction

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import CustomError from "../../../Backend/utils/CustomError.js";
+import CustomError from "../utils/CustomError.js";
 
 export async function Authmiddleware(req, res, next) {
     try {
