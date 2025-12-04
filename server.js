@@ -8,9 +8,9 @@ import Bidrouter from './src/routers/Bid.router.js'
 import Transcationrouter from './src/routers/Transaction.router.js'
 import cookieParser from 'cookie-parser';
 import {errorHandler} from './src/middlewares/errorHandler.js'
-
+import {IntilizeIo} from './src/sockets/index.js'
 import http from 'http';
-
+import {Server} from 'socket.io'
 import morgan from 'morgan';
 import cors from 'cors';
 
@@ -20,6 +20,19 @@ dotenv.config();
 const PORT = process.env.PORT||5002
 const app = express();
 const server = http.createServer(app);
+
+
+
+const io=new Server(server,{
+  cors:{
+    origin: "http://localhost:3000", 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+  }
+})
+
+IntilizeIo(io)
+
 
 
 app.use(express.json());
@@ -36,6 +49,12 @@ app.use(morgan(':method :url :status :response-time ms', {
       write: (message) => logger.info(message.trim())
     }
   }));
+
+  app.use((req, res, next) => {
+    req.io = io;   
+    next();
+  });
+  
   
 app.use("/api/auth", Authrouter);
 app.use("/api/auction",Auctionrouter)
