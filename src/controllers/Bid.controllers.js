@@ -7,7 +7,7 @@ import CustomError from "../utils/CustomError.js";
 export async function createBid(req, res, next) {
   try {
     const { auction_id, user_id, bid_amount } = req.body;
-
+    const io=req.io
     if (!auction_id || !user_id || !bid_amount) {
       throw new CustomError("auction_id, user_id, and bid_amount are required", 400);
     }
@@ -19,6 +19,8 @@ export async function createBid(req, res, next) {
     });
 
     await bid.save();
+
+    io.emit("new_bid",bid)
 
     res.status(201).json({
       success: true,

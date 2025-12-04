@@ -8,6 +8,8 @@ import Bidrouter from './src/routers/Bid.router.js'
 import Transcationrouter from './src/routers/Transaction.router.js'
 import cookieParser from 'cookie-parser';
 import {errorHandler} from './src/middlewares/errorHandler.js'
+import Auction from './src/models/Auction.model.js'
+import { startAuctionCountdown, addAuctionToCountdown } from "./src/utils/auctionCountdown.js";
 import {IntilizeIo} from './src/sockets/index.js'
 import http from 'http';
 import {Server} from 'socket.io'
@@ -55,6 +57,13 @@ app.use(morgan(':method :url :status :response-time ms', {
     next();
   });
   
+const loadLiveAuctions = async () => {
+    const auctions = await Auction.find({ status: "active" });
+    auctions.forEach(addAuctionToCountdown);
+ };
+
+loadLiveAuctions();
+startAuctionCountdown(io);
   
 app.use("/api/auth", Authrouter);
 app.use("/api/auction",Auctionrouter)

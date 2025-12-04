@@ -1,6 +1,6 @@
 import Auction from "../models/Auction.model.js";
 import CustomError from "../utils/CustomError.js";
-
+import { startAuctionCountdown, addAuctionToCountdown } from "../utils/auctionCountdown.js";
 // ===============================
 // CREATE AUCTION
 // ===============================
@@ -43,7 +43,7 @@ export async function CreateAuction(req, res, next) {
     });
 
     await newAuction.save();
-
+    addAuctionToCountdown(newAuction)
     res.status(201).json({
       success: true,
       data: newAuction,
