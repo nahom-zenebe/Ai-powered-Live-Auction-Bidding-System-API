@@ -7,6 +7,8 @@ import Categoryrouter from './src/routers/Category.router.js'
 import Bidrouter from './src/routers/Bid.router.js'
 import Transcationrouter from './src/routers/Transaction.router.js'
 import cookieParser from 'cookie-parser';
+import {errorHandler} from './src/middlewares/errorHandler.js'
+
 import http from 'http';
 
 import morgan from 'morgan';
@@ -28,7 +30,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
-
+app.use(errorHandler)
 app.use(morgan(':method :url :status :response-time ms', {
     stream: {
       write: (message) => logger.info(message.trim())

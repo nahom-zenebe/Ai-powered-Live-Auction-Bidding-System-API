@@ -1,15 +1,15 @@
 import express from 'express'
 import {createCategory,getAllCategories,getSingleCategory,updateCategory,deleteCategory} from '../controllers/Auction.controllers.js'
 
-
+import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 const router=express()
 
 
-router.post("/",createCategory)
-router.get("/",getAllCategories)
-router.get('/:CategoryId',getSingleCategory)
-router.delete('/:CategoryId',deleteCategory)
-router.put('/:CategoryId',updateCategory)
+router.post("/",Authmiddleware,createCategory)
+router.get("/",Authmiddleware,getAllCategories)
+router.get('/:CategoryId',Authmiddleware,getSingleCategory)
+router.delete('/:CategoryId',Authmiddleware,deleteCategory)
+router.put('/:CategoryId',Authmiddleware,updateCategory)
 
 
 

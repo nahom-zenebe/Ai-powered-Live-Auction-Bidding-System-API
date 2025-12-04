@@ -1,15 +1,15 @@
 import express from 'express'
 import { createBid,deleteBid,updateBid,getSingleBid,getAllBids} from '../controllers/Auction.controllers.js'
-
+import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 
 const router=express()
 
 
-router.post("/", createBid)
-router.get("/",getAllBids)
-router.get('/:BidId',getSingleBid)
-router.delete('/:BidId',deleteBid)
-router.put('/:BidId',updateBid)
+router.post("/",Authmiddleware, createBid)
+router.get("/",Authmiddleware,getAllBids)
+router.get('/:BidId',Authmiddleware,getSingleBid)
+router.delete('/:BidId',Authmiddleware,deleteBid)
+router.put('/:BidId',Authmiddleware,updateBid)
 
 
 

@@ -48,10 +48,7 @@ export async function Authmiddleware(req, res, next) {
         });
 
 
-        req.user = {
-            id: refreshDecoded.id,
-            email: refreshDecoded.email
-        };
+        req.user =refreshDecoded
 
         return next();
 
