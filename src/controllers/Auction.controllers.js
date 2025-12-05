@@ -1,6 +1,7 @@
 import Auction from "../models/Auction.model.js";
 import CustomError from "../utils/CustomError.js";
 import { startAuctionCountdown, addAuctionToCountdown } from "../utils/auctionCountdown.js";
+import {notifyAuctionActivation} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
 // ===============================
 // CREATE AUCTION
@@ -52,6 +53,8 @@ export async function CreateAuction(req, res, next) {
 
     auctionNamespace.emit("send-auction",newAuction)
 
+    await  notifyAuctionActivation(newAuction);
+
     res.status(201).json({
       success: true,
       data: newAuction,
@@ -89,6 +92,25 @@ export async function getAllAuction(req, res, next) {
   }
 }
 
+export async function activateAuction(req,res){
+  const { AuctionId } = req.params;
+
+    if (!AuctionId) {
+      throw new CustomError("AuctionId is required", 400);
+    }
+    const auction = await Auction.findById(AuctionId);
+
+    auction.status="active";
+
+    await auction.save();
+
+    await  notifyAuctionActivation(auction);
+
+
+    res.status(200).json(auction)
+ 
+ 
+}
 // ===============================
 // GET SINGLE AUCTION
 // ===============================

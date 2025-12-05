@@ -1,9 +1,7 @@
 import Notification from "../models/Notification.model.js";
 import CustomError from "../utils/CustomError.js";
 import { getIo } from "../sockets/io.js";
-// ===============================
-// CREATE CATEGORY
-// ===============================
+
 export async function createNotification(req, res, next) {
   try {
     const { user_id,type,message,auction_id,metadata } = req.body;
@@ -15,16 +13,12 @@ export async function createNotification(req, res, next) {
     const notifciation = new Notification({ user_id,type,message,auction_id,metadata });
     await notifciation.save();
 
-    transactionNamespace.emit("create-message", notifciation)
+    notificationNamespace.emit("create-message", notifciation)
     res.status(201).json(notifciation);
   } catch (error) {
     next(error);
   }
 }
-
-// ===============================
-// GET ALL notifications
-// ===============================
 export async function getAllNotification(req, res, next) {
   try {
     const limit=req.query.limit
@@ -39,9 +33,7 @@ export async function getAllNotification(req, res, next) {
   }
 }
 
-// ===============================
-// GET SINGLE CATEGORY
-// ===============================
+
 export async function getSingleNotification(req, res, next) {
   try {
     const { notificationId } = req.params;
@@ -62,9 +54,7 @@ export async function getSingleNotification(req, res, next) {
   }
 }
 
-// ===============================
-// UPDATE CATEGORY
-// ===============================
+
 export async function updateNotification(req, res, next) {
   try {
     const { notificationId } = req.params;
@@ -89,9 +79,7 @@ export async function updateNotification(req, res, next) {
   }
 }
 
-// ===============================
-// DELETE CATEGORY
-// ===============================
+
 export async function deleteNotification(req, res, next) {
   try {
     const { notificationId } = req.params;

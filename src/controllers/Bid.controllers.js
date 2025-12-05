@@ -1,17 +1,24 @@
 import Bid from "../models/Bid.model.js";
 import CustomError from "../utils/CustomError.js";
 import Auction from '../models/Auction.model.js';
-
+import Notification from '../models/Notification.model.js'
+import { getIo } from "../sockets/io.js";
 // ===============================
 // CREATE BID
 // ===============================
 export async function createBid(req, res, next) {
   try {
     const { auction_id, user_id, bid_amount } = req.body;
-    const io=req.io
+    const {limit}=req.query
+    limit=parseInt(limit||20)
+    const io=getIo()
+    const BidNamespace = io.of('/Bid');
+    
     if (!auction_id || !user_id || !bid_amount) {
       throw new CustomError("auction_id, user_id, and bid_amount are required", 400);
     }
+
+    
 
     const Auctions=await Auction.findById(auction_id)
     if(Auctions.end_time<=Date.now()){
@@ -24,6 +31,9 @@ export async function createBid(req, res, next) {
       bid_amount,
     });
 
+    const updatedLeaderBoard=await Bid.find(auction_id).sort({ bid_amount: -1 })
+    .limit(limit);
+
 
 
     await bid.save();
@@ -35,7 +45,12 @@ export async function createBid(req, res, next) {
     Auction.current_winner =  user_id;
     Auction.bids=bid
 
-    io.emit("new_bid",bid)
+    BidNamespace.emit("new_bid",bid)
+
+    BidNamespace.emit("bid_leaderboard",{
+      auctionId: auction_id,
+      leader:updatedLeaderBoard
+    })
 
     res.status(201).json({
       success: true,
@@ -128,6 +143,38 @@ export async function updateBid(req, res, next) {
     next(error);
   }
 }
+
+
+export async function LeaderBoard(req, res, next) {
+  try {
+    let { limit } = req.query;
+    const { AuctionId } = req.params;
+
+    limit = parseInt(limit) || 20;
+
+    if (!AuctionId) {
+      throw new CustomError("AuctionId is required", 400);
+    }
+
+    // Fetch top bids for this auction
+    const topBids = await Bid.find({ auctionId: AuctionId })
+      .sort({ bid_amount: -1 })
+      .limit(limit);
+
+    if (!topBids || topBids.length === 0) {
+      throw new CustomError("No bids found for this auction", 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      leaderboard: topBids
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+
 
 // ===============================
 // DELETE BID
