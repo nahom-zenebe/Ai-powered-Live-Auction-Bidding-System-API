@@ -13,4 +13,4 @@ router.put('/:CategoryId',Authmiddleware,updateCategory)
 
 
 
-export default router
+export default router;

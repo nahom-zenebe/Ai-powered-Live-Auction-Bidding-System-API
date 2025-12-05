@@ -15,4 +15,4 @@ router.put('/:BidId',Authmiddleware,updateBid)
 
 
 
-export default router
+export default router;

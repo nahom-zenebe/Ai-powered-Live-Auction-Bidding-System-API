@@ -6,7 +6,7 @@ import {AdminMiddleware} from '../middlewares/Admin.middleware.js'
 const router=express()
 
 
-router.post("/",Authmiddleware,CreateAuction)
+router.post("/:AuctionId",Authmiddleware,CreateAuction)
 router.get("/",Authmiddleware,getAllAuction)
 router.get('/:AuctionId',Authmiddleware,getSingleAuction)
 router.delete('/:AuctionId',Authmiddleware,DeleteAuction)

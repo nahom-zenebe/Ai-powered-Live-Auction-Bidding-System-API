@@ -2,17 +2,27 @@ import Bid from "../models/Bid.model.js";
 import CustomError from "../utils/CustomError.js";
 import Auction from '../models/Auction.model.js';
 import Notification from '../models/Notification.model.js'
+import {BidNotification} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
 // ===============================
 // CREATE BID
 // ===============================
 export async function createBid(req, res, next) {
   try {
-    const { auction_id, user_id, bid_amount } = req.body;
+    const { user_id, bid_amount } = req.body;
+    const { auction_id}=req.params;
+
     const {limit}=req.query
     limit=parseInt(limit||20)
     const io=getIo()
     const BidNamespace = io.of('/Bid');
+
+
+    const auction = await Auction.findById(auctionId);
+    if (!auction) {
+      throw new CustomError( "Auction not found" ,404);
+
+    }
     
     if (!auction_id || !user_id || !bid_amount) {
       throw new CustomError("auction_id, user_id, and bid_amount are required", 400);
@@ -46,7 +56,7 @@ export async function createBid(req, res, next) {
     Auction.bids=bid
 
     BidNamespace.emit("new_bid",bid)
-
+    BidNotification(bid)
     BidNamespace.emit("bid_leaderboard",{
       auctionId: auction_id,
       leader:updatedLeaderBoard

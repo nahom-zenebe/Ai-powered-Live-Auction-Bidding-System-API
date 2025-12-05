@@ -11,4 +11,4 @@ router.get("/verify/:id",VerifyUser)
 
 
 
-export default router
+export default router;
