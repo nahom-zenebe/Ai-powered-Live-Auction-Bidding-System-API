@@ -29,7 +29,11 @@ export async function createCategory(req, res, next) {
 // ===============================
 export async function getAllCategories(req, res, next) {
   try {
-    const categories = await Category.find();
+    const limit=req.query.limit
+    const skip=req.query.skip
+    skip = parseInt(skip, 10);
+    limit = parseInt(limit, 10);
+    const categories = await Category.find().limit(limit).skip(skip);
 
     res.status(200).json({
       success: true,

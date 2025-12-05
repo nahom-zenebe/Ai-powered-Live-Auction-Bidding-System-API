@@ -12,7 +12,7 @@ export async function Authmiddleware(req, res, next) {
 
 
         try {
-            const decoded = jwt.verify(accessToken, process.env.AccessKey );
+            const decoded =await  jwt.verify(accessToken, process.env.AccessKey );
             req.user = decoded;     
             return next();          
         } 

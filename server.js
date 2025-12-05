@@ -15,7 +15,7 @@ import http from 'http';
 import {Server} from 'socket.io'
 import morgan from 'morgan';
 import cors from 'cors';
-
+import {initIo} from './src/sockets/io.js'
 
 dotenv.config();
 
@@ -25,13 +25,7 @@ const server = http.createServer(app);
 
 
 
-const io=new Server(server,{
-  cors:{
-    origin: "http://localhost:3000", 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-  }
-})
+const io=initIo(server)
 
 IntilizeIo(io)
 
@@ -52,11 +46,6 @@ app.use(morgan(':method :url :status :response-time ms', {
     }
   }));
 
-  app.use((req, res, next) => {
-    req.io = io;   
-    next();
-  });
-  
 const loadLiveAuctions = async () => {
     const auctions = await Auction.find({ status: "active" });
     auctions.forEach(addAuctionToCountdown);

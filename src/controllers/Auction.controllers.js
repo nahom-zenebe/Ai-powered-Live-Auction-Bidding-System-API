@@ -1,6 +1,7 @@
 import Auction from "../models/Auction.model.js";
 import CustomError from "../utils/CustomError.js";
 import { startAuctionCountdown, addAuctionToCountdown } from "../utils/auctionCountdown.js";
+import { getIo } from "../sockets/io.js";
 // ===============================
 // CREATE AUCTION
 // ===============================
@@ -21,6 +22,8 @@ export async function CreateAuction(req, res, next) {
       current_winner
     } = req.body;
 
+    const io=getIo()
+    const auctionNamespace = io.of("/auction");
   
     if (!title || !description || !start_time || !end_time || !category_id) {
       throw new CustomError("Required fields cannot be empty", 400);
@@ -43,7 +46,12 @@ export async function CreateAuction(req, res, next) {
     });
 
     await newAuction.save();
+
+    
     addAuctionToCountdown(newAuction)
+
+    auctionNamespace.emit("send-auction",newAuction)
+
     res.status(201).json({
       success: true,
       data: newAuction,
