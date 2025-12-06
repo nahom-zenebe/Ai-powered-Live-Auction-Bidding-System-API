@@ -11,12 +11,14 @@ import cookieParser from 'cookie-parser';
 import {errorHandler} from './src/middlewares/errorHandler.js'
 import Auction from './src/models/Auction.model.js'
 import { startAuctionCountdown, addAuctionToCountdown } from "./src/utils/auctionCountdown.js";
-import {IntilizeIo} from './src/sockets/index.js'
+import {InitializeIo} from './src/sockets/index.js'
 import http from 'http';
 import {Server} from 'socket.io'
 import morgan from 'morgan';
 import cors from 'cors';
 import {initIo} from './src/sockets/io.js'
+import  swaggerUI from 'swagger-ui-express';
+import  swaggerSpec from './src/config/swagger.js';
 
 dotenv.config();
 
@@ -28,7 +30,7 @@ const server = http.createServer(app);
 
 const io=initIo(server)
 
-IntilizeIo(io)
+InitializeIo(io)
 
 
 
@@ -41,11 +43,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(errorHandler)
-app.use(morgan(':method :url :status :response-time ms', {
-    stream: {
-      write: (message) => logger.info(message.trim())
-    }
-  }));
+
 
 const loadLiveAuctions = async () => {
     const auctions = await Auction.find({ status: "active" });
@@ -54,7 +52,9 @@ const loadLiveAuctions = async () => {
 
 loadLiveAuctions();
 startAuctionCountdown(io);
-  
+
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
 app.use("/api/auth", Authrouter);
 app.use("/api/auction",Auctionrouter)
 app.use("/api/category",Categoryrouter )

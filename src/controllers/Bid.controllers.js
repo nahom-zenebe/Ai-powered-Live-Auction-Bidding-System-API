@@ -18,7 +18,7 @@ export async function createBid(req, res, next) {
     const BidNamespace = io.of('/Bid');
 
 
-    const auction = await Auction.findById(auctionId);
+    const auction = await Auction.findById(auction_Id);
     if (!auction) {
       throw new CustomError( "Auction not found" ,404);
 
