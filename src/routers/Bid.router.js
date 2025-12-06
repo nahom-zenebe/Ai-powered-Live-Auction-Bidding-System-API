@@ -2,7 +2,7 @@ import express from 'express'
 import { createBid, LeaderBoard,deleteBid,updateBid,getSingleBid,getAllBids} from '../controllers/Bid.controllers.js'
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 
-const router=express()
+const router = express.Router();
 
 
 router.post("/",Authmiddleware, createBid)

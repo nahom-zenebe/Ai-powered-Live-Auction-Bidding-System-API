@@ -2,7 +2,7 @@ import express from 'express'
 import {createCategory,getAllCategories,getSingleCategory,updateCategory,deleteCategory} from '../controllers/Category.controllers.js'
 
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
-const router=express()
+const router = express.Router();
 
 
 router.post("/",Authmiddleware,createCategory)

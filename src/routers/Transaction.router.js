@@ -2,7 +2,7 @@ import express from 'express'
 import {createTransaction,updateTransaction,getSingleTransaction,getAllTransactions,deleteTransaction} from '../controllers/Transaction.controller.js'
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 
-const router=express()
+const router = express.Router();
 
 
 router.post("/",Authmiddleware,createTransaction)

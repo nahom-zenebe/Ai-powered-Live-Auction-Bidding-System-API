@@ -41,6 +41,11 @@ const AuctionSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Bid"
     },
+    rating:{
+        type:Number,
+        minLength:0,
+        maxLength:5
+    },
   
     min_bid:{
         type:Number,
