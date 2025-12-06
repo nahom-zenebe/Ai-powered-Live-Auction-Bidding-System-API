@@ -1,4 +1,5 @@
 import Notification from "../models/Notification.model.js";
+import  Transcation from "../models/Transaction.model.js"
 import { getIo } from "../sockets/io.js";
 
 
@@ -23,6 +24,20 @@ export async function notifyAuctionActivation(auction) {
        title: auction.title,
         message: saved.message,
        createdAt: saved.createdAt
+    })
+}
+
+
+export async function TranscationNoficiation(transcation){
+    const io=getIo();
+    const transactionNamespace = io.of('/transaction');
+
+    const savedtranscation=await Transcation.create({
+        user_id:transcation.user_id,
+        type: "Transcation",
+        auction_id:"",
+        title: ` "${transcation.amount}"$ have successfully transfer!`,
+        message: ` "${transcation.status}"$ have been did!`
     })
 }
 

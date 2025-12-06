@@ -17,12 +17,12 @@ export const startAuctionCountdown=(io)=>{
         for(const[auctionId,endTime] of liveAuctions.entries()){
             const timeLeft=Math.max(0,endTime-current_time);
 
-            io.emit("auction_timer_update", { auctionId, timeLeft });
+            io.of('/auction').emit("auction_timer_update", { auctionId, timeLeft });
 
             if(timeLeft<=0){
                 await Auction.findByIdAndUpdate(auctionId, { status: "ended" });
 
-                io.emit("auction_ended", { auctionId });
+                io.of('/auction').emit("auction_ended", { auctionId });
 
                 liveAuctions.delete(auctionId)
             }

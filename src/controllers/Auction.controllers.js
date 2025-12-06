@@ -1,5 +1,6 @@
 import Auction from "../models/Auction.model.js";
 import CustomError from "../utils/CustomError.js";
+import User from '../models/user.model.js';
 import { startAuctionCountdown, addAuctionToCountdown } from "../utils/auctionCountdown.js";
 import {notifyAuctionActivation} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
@@ -160,9 +161,31 @@ export async function getAuctionByStatus(req,res,next){
 
 export async function  VerifyAuction(req,res,next){
   try{
+    const {userId,AuctionId}=req.params;
+
+    if(!userId||!AuctionId){
+      throw new CustomError("no userId is found",404);
+    }
+    const user=await User.findById(userId)
+    const auction=await Auction.findById(AuctionId)
+
+    if(!user||!auction){
+      throw new CustomError("no user is found",404);
+    }
+    if(user.isVerified=false){
+      throw new CustomError("please verify to realse your auction",404);
+    }
+    if(user.isVerified=true){
+      auction.is_verified=true
+
+      res.status(200).json("Auction Authenticated Successfully");
+
+
+    }
 
   }
   catch(error){
+    next(errorr)
 
   }
 }
