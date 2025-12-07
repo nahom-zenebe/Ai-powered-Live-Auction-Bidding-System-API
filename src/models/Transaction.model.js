@@ -31,6 +31,11 @@ const TransactionSchema = new mongoose.Schema(
       enum: ["PENDING", "COMPLETED", "FAILED"],
       default: "PENDING",
     },
+    transaction_type:{
+      type:String,
+      enum:["REFUND","AUCTION_WIN_PAYMENT","BID_PAYMENT"],
+      default:"BID_PAYMENT"
+    }
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

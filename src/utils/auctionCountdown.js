@@ -6,7 +6,15 @@ const liveAuctions=new Map();
 
 
 export const addAuctionToCountdown=(auction)=>{
+    const endTime = new Date(auction.end_time);
+    const now = new Date();
+  
+
+    if(endTime<=now){
+        return "Ended"
+    }
     liveAuctions.set(auction._id.toString(),new Date(auction.end_time))
+    return "Active"
 }
 
 

@@ -50,11 +50,14 @@ export async function CreateAuction(req, res, next) {
     await newAuction.save();
 
     
-    addAuctionToCountdown(newAuction)
+     addAuctionToCountdown(newAuction)
 
     auctionNamespace.emit("send-auction",newAuction)
 
     await  notifyAuctionActivation(newAuction);
+
+
+
 
     res.status(201).json({
       success: true,

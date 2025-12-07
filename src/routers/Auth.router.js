@@ -1,5 +1,5 @@
 import express from 'express'
-import { login, signup, VerifyUser } from '../controllers/Auth.controller.js'
+import { login, signup, CountNumberofUser, VerifyUser } from '../controllers/Auth.controller.js'
 
 const router = express.Router();
 
@@ -73,5 +73,5 @@ router.post("/login", login)
  *         description: Verification success
  */
 router.get("/verify/:id", VerifyUser)
-
+router.get("/numberofUser", CountNumberofUser)
 export default router;

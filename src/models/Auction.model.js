@@ -62,7 +62,7 @@ const AuctionSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["upcoming", "active", "ended", "cancelled"],
+        enum: ["upcoming", "active","processing", "ended", "cancelled"],
         default: "upcoming",
         index: true,
       },
@@ -71,6 +71,7 @@ const AuctionSchema = new mongoose.Schema({
         ref: "User",
         default: null,
       },
+      
       is_verified:{
         type:Boolean,
         default:false
@@ -93,8 +94,6 @@ AuctionSchema.index({ category: 1 });
 AuctionSchema.index({ seller_id: 1 });
 AuctionSchema.index({ start_time: 1 });
 AuctionSchema.index({ end_time: 1 });
-
-
 
 const Auction=mongoose.model("Auction",AuctionSchema)
 

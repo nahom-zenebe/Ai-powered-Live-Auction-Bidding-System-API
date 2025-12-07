@@ -19,7 +19,7 @@ import cors from 'cors';
 import {initIo} from './src/sockets/io.js'
 import  swaggerUI from 'swagger-ui-express';
 import  swaggerSpec from './src/config/swagger.js';
-
+import {startCronJobs} from './src/cron-job/auctionFinalizer.cron.js'
 dotenv.config();
 
 const PORT = process.env.PORT||5002
@@ -67,4 +67,5 @@ app.use("/api/Notification", Notificationrouter)
 server.listen(PORT, () => {
     connectionDb();
     console.log(`Server running at port ${PORT}`);
+    startCronJobs()
 });

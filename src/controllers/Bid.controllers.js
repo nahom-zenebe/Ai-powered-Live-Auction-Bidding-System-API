@@ -3,6 +3,9 @@ import CustomError from "../utils/CustomError.js";
 import Auction from '../models/Auction.model.js';
 import Notification from '../models/Notification.model.js'
 import {BidNotification} from '../utils/NotificationAuction.js'
+import { createTransactionService } from "../services/transaction.service.js";
+
+
 import { getIo } from "../sockets/io.js";
 // ===============================
 // CREATE BID
@@ -17,8 +20,13 @@ export async function createBid(req, res, next) {
     const io=getIo()
     const BidNamespace = io.of('/Bid');
 
+   const userAcccount=await Transcation.findById( user_id);
 
-    const auction = await Auction.findById(auction_Id);
+   if(!userAcccount){
+   throw new CustomError("User Acccount is not found ")
+   }
+
+    const auction = await Auction.findById(auction_id);
     if (!auction) {
       throw new CustomError( "Auction not found" ,404);
 
@@ -35,11 +43,26 @@ export async function createBid(req, res, next) {
          throw new CustomError("the time has ended",400)
     }
 
+    if(userAcccount.balance+0.01< bid_amount){
+      throw new CustomError("your balance is not enough",500)
+    }
+
+    const newTransaction=await createTransactionService({
+      user_id,
+      amount:bid_amount,
+      transaction_type:"BID_PAYMENT",
+      status:"COMPLETED"
+    })
+    newTransaction.balance-=bid_amount
+
+    await newTransaction.save()
+
     const bid = new Bid({
       auction_id,
       user_id,
       bid_amount,
     });
+
 
     const updatedLeaderBoard=await Bid.find(auction_id).sort({ bid_amount: -1 })
     .limit(limit);
@@ -70,6 +93,8 @@ export async function createBid(req, res, next) {
     next(error);
   }
 }
+
+
 
 // ===============================
 // GET ALL BIDS (WITH OPTIONAL FILTERS)

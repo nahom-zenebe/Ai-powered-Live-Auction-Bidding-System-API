@@ -134,3 +134,31 @@ export async function login(req, res, next) {
     next(err);
   }
 }
+
+
+export async function CountNumberofUser(req,res,next){
+  try{
+    const numberOfUsers = await User.aggregate([
+      {
+        $group: {
+          _id: "$role",          
+          count: { $sum: 1 }    
+        }
+      }
+    ]);
+
+    if(! numberOfUsers){
+      throw new CustomError("no user is founded",404)
+    }
+
+    res.status(200).json(
+      numberOfUsers);
+
+
+  }
+  catch(error){
+    next(error)
+
+  }
+}
+

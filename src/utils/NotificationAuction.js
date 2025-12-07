@@ -39,6 +39,13 @@ export async function TranscationNoficiation(transcation){
         title: ` "${transcation.amount}"$ have successfully transfer!`,
         message: ` "${transcation.status}"$ have been did!`
     })
+    transactionNamespace.emit("transcation",{
+        _id: savedtranscation._id,
+        auctionId: savedtranscation._id,
+        title: savedtranscation.title,
+         message: savedtranscation.message,
+        createdAt: savedtranscation.createdAt
+    })
 }
 
 

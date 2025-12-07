@@ -1,28 +1,11 @@
 import Transaction from "../models/Transaction.model.js";
 import CustomError from "../utils/CustomError.js";
 import { getIo } from "../sockets/io.js";
+import { createTransactionService } from "../services/transaction.service.js";
 
-// ===============================
-// CREATE TRANSACTION
-// ===============================
 export async function createTransaction(req, res, next) {
   try {
-    const { user_id, transaction_type, amount } = req.body;
-
-    const io=getIo()
-    const  transactionNamespace = io.of("/transaction");
-  
-
-    if (!user_id || !transaction_type || !amount) {
-      throw new CustomError("user_id, transaction_type, and amount are required", 400);
-    }
-
-
-
-    const transaction = new Transaction(req.body);
-    await transaction.save();
-
-    transactionNamespace.emit("create-transcation",transaction)
+    const transaction = await createTransactionService(req.body);
 
     res.status(201).json({
       success: true,
