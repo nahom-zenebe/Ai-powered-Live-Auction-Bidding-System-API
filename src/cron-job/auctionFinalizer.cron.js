@@ -84,7 +84,7 @@ export async function FinilizeAuction(){
 
 
             auction.status="ended"
-            auction.current_winner =winnerId;
+            auction.current_winner =WinnerId;
             auction.current_bid=WinnerAmount; 
             await auction.save();
 
