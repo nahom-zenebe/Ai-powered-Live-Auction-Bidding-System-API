@@ -16,9 +16,7 @@ export async function createTransaction(req, res, next) {
   
   const transaction = await createTransactionService(req.body);
 
-    res.status(201).json(
-      data: transaction,
-  );
+    res.status(201).json( transaction);
 
   } catch (error) {
     next(error);

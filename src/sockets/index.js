@@ -32,11 +32,13 @@ export function InitializeIo(io) {
     const notificationNamespace = io.of('/notification');
     const auctionNamespace = io.of('/auction');
     const transactionNamespace = io.of('/transaction');
+    const walletNamespace=io.of("/wallet")
     const BidNamespace = io.of('/Bid');
 
     
     notificationNamespace.use(AuthenticationMiddleware);
     auctionNamespace.use(AuthenticationMiddleware);
+    walletNamespace.use(AuthenticationMiddleware)
     transactionNamespace.use(AuthenticationMiddleware);
     BidNamespace.use(AuthenticationMiddleware)
 

@@ -1,4 +1,4 @@
-import  createWalletService from '../service/wallet.server'
+import  {createWalletService,credit,  debit} from '../service/wallet.server'
 import Wallet from '../models/Wallet.model'
 import User from '../models/user.model'
 
@@ -34,3 +34,36 @@ export async function Createwallet(req,res){
 
 
 }
+
+export async function creditWallet(req, res, next) {
+    try {
+      const { userId, amount, reason } = req.body;
+  
+      const updatedWallet = await credit(userId, amount, reason);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Wallet credited successfully",
+        wallet: updatedWallet,
+      });
+    } catch (err) {
+      next(err); 
+    }
+  }
+
+
+  export async function debitWallet(req, res, next) {
+    try {
+      const { userId, amount, reason } = req.body;
+  
+      const updatedWallet = await   debit(userId, amount, reason);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Wallet debit successfully",
+        wallet: updatedWallet,
+      });
+    } catch (err) {
+      next(err); 
+    }
+  }
