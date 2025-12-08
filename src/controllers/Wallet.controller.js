@@ -67,3 +67,37 @@ export async function creditWallet(req, res, next) {
       next(err); 
     }
   }
+
+
+  export async function lockAmountwallet(req, res, next) {
+    try {
+      const { userId, amount } = req.body;
+  
+      const updatedWallet = await lockAmount(userId, amount);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Wallet lock Amount successfully",
+        wallet: updatedWallet,
+      });
+    } catch (err) {
+      next(err); 
+    }
+  }
+
+
+  export async function unlockAmountwallet(req, res, next) {
+    try {
+      const { userId, amount } = req.body;
+  
+      const updatedWallet = await unlockAmount(userId, amount);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Wallet unlock Amount successfully",
+        wallet: updatedWallet,
+      });
+    } catch (err) {
+      next(err); 
+    }
+  }
