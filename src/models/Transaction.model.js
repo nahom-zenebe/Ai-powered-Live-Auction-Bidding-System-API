@@ -1,49 +1,72 @@
 import mongoose from "mongoose";
 
-const TransactionSchema = new mongoose.Schema(
+const transactionSchema = new mongoose.Schema(
   {
-    user_id: {
+    walletId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Wallet",
+      required: true,
+    },
+
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
-    balance: {
-      type: Number,
-      default: 0,
-    },
-
-    transaction_type: {
+    type: {
       type: String,
-      enum: ["DEPOSIT", "BID", "REFUND"],
       required: true,
+      enum: [
+        "DEPOSIT",
+        "WITHDRAW",
+        "BID_LOCK",
+        "BID_RELEASE",
+        "BID_PAYMENT",
+        "REFUND",
+        "TRANSFER_IN",
+        "TRANSFER_OUT"
+      ],
     },
 
     amount: {
       type: Number,
       required: true,
-      min: 0.01,
+      min: 0,
+    },
+
+    previousBalance: Number,
+    newBalance: Number,
+
+    auctionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Auction",
+    },
+
+    bidId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bid",
+    },
+
+    reference: {
+      type: String, // unique id for external payments or tracking
     },
 
     status: {
       type: String,
-      enum: ["PENDING", "COMPLETED", "FAILED"],
-      default: "PENDING",
+      enum: ["SUCCESS", "FAILED", "PENDING"],
+      default: "SUCCESS",
     },
-    transaction_type:{
-      type:String,
-      enum:["REFUND","AUCTION_WIN_PAYMENT","BID_PAYMENT"],
-      default:"BID_PAYMENT"
-    }
+
+    description: String,
   },
   {
-    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+    timestamps: true,
   }
 );
 
-TransactionSchema.index({user_id:1})
+transactionSchema.index({ walletId: 1 });
+transactionSchema.index({ userId: 1 });
+transactionSchema.index({ type: 1 });
 
-const Transaction= mongoose.model("Transaction", TransactionSchema);
-
-export default Transaction
+export default mongoose.model("Transaction", transactionSchema);
