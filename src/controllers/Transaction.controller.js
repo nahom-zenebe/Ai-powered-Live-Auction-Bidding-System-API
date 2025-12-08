@@ -5,12 +5,20 @@ import { createTransactionService } from "../services/transaction.service.js";
 
 export async function createTransaction(req, res, next) {
   try {
-    const transaction = await createTransactionService(req.body);
+    const {user_id,
+      transaction_type,
+      amount,
+    }=req.body
+        
+    if (!user_id || !transaction_type || !amount) {
+      throw new CustomError("user_id, transaction_type, and amount are required", 400);
+    }
+  
+  const transaction = await createTransactionService(req.body);
 
-    res.status(201).json({
-      success: true,
+    res.status(201).json(
       data: transaction,
-    });
+  );
 
   } catch (error) {
     next(error);

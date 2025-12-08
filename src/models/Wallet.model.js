@@ -1,13 +1,19 @@
 import mongoose from "mongoose";
-
+import crypto from "crypto";
 const walletSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true, // one wallet per user
+      unique: true, 
     },
+
+    walletNumber: {
+        type: String,
+        unique: true,
+        required: true,
+      },
 
     balance: {
       type: Number,
@@ -44,5 +50,19 @@ const walletSchema = new mongoose.Schema(
 );
 
 walletSchema.index({ userId: 1 });
+walletSchema.prev("validate",async function(next){
+    if(this. walletNumber) next()
 
+
+    const generate=()=> "WLT-" + crypto.randomBytes(6).toString("hex").toUpperCase();
+    let number = generate();
+    let exists = await mongoose.model("Wallet").findOne({ walletNumber: number });
+    while (exists) {
+        number = generate();
+        exists = await mongoose.model("Wallet").findOne({ walletNumber: number });
+      }
+      this.walletNumber=number;
+      next()
+
+})
 export default mongoose.model("Wallet", walletSchema);
