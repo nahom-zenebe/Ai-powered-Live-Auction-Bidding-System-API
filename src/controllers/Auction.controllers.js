@@ -258,9 +258,10 @@ export async function DeleteAuction(req, res, next) {
 export async function RatingAuction(req,res,next){
   try{
   const {rating}=req.body;
-  const {AuctionId}=req.params;
+  const {AuctionId,userId}=req.params;
+  
 
-  if(!AuctionId||!rating){
+  if(!AuctionId||!rating||!userId){
     throw new CustomError("no AuctionId or Rating",404);
   }
   
@@ -270,8 +271,14 @@ export async function RatingAuction(req,res,next){
   if(!auction){
     throw new CustomError("no Auction is available",404);
   }
+   
+  if(auction.rating.has(userId)){
+    auction.rating.delete(userId);
+  }
+  auction.rating.set(userId,rating)
+  
 
-  auction.rating=rating
+  auction.save();
 
 
   res.status(200).json("rating successful")

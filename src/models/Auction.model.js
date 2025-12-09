@@ -42,9 +42,12 @@ const AuctionSchema = new mongoose.Schema({
         ref:"Bid"
     },
     rating:{
-        type:Number,
-        minLength:0,
-        maxLength:5
+        type:Map,
+        of:Number,
+        minlength:1,
+        maxlength:5,
+        default:{}
+        
     },
   
     min_bid:{
@@ -94,6 +97,8 @@ AuctionSchema.index({ category: 1 });
 AuctionSchema.index({ seller_id: 1 });
 AuctionSchema.index({ start_time: 1 });
 AuctionSchema.index({ end_time: 1 });
+
+
 
 const Auction=mongoose.model("Auction",AuctionSchema)
 

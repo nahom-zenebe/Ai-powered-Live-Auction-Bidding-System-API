@@ -5,12 +5,13 @@ import { createTransactionService } from "../services/transaction.service.js";
 
 export async function createTransaction(req, res, next) {
   try {
-    const {user_id,
-      transaction_type,
+    const {walletId,user_id,
+      type,
       amount,
+       auctionId
     }=req.body
         
-    if (!user_id || !transaction_type || !amount) {
+    if (!walletId||!user_id || !type || !amount) {
       throw new CustomError("user_id, transaction_type, and amount are required", 400);
     }
   

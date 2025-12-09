@@ -3,8 +3,7 @@ import Bid from "../models/Bid.model.js";
 import WalletService from "../services/wallet.service.js";
 import { createTransactionService } from "../services/transaction.service.js";
 import { schedule } from "./scheduler.js";
-
-
+import WalletService from '../service/wallet.server.js'
 
 
 export async function FinilizeAuction(){
@@ -54,9 +53,10 @@ export async function FinilizeAuction(){
 
                 //Todo
                 await WalletService.debit(WinnerId,WinnerAmount)
-
+                const wallet=await WinnerId.findOne({userId:WinnerId})
 
                 await createTransactionService({
+                    WalletId:wallet._id,
                     user_id:  WinnerId,
                     transaction_type: "AUCTION_WIN_PAYMENT",
                     amount: WinnerAmount,
@@ -75,7 +75,7 @@ export async function FinilizeAuction(){
                 await WalletService.credit(bids.user_id,bids.amount)
                 await createTransactionService({
                     user_id:  bids.user_id,
-                    transaction_type: "REFUND",
+                    type: "REFUND",
                     amount: bids.amount,
                     status:"COMPLETED",
                     metadata: { bidsId: bids._id }

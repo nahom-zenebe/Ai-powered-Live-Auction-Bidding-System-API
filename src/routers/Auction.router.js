@@ -4,7 +4,7 @@ import express from 'express'
 import {DeleteAuction,RatingAuction,VerifyAuction,getAuctionByStatus,activateAuction,UpdateAuction,getSingleAuction,getAllAuction,CreateAuction} from '../controllers/Auction.controllers.js'
 
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
-import {AdminMiddleware} from '../middlewares/Admin.middleware.js'
+
 const router = express.Router();
 
 router.post("/:AuctionId",Authmiddleware,CreateAuction)
