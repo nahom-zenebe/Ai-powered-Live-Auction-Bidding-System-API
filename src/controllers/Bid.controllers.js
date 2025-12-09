@@ -122,6 +122,20 @@ export async function getAllBids(req, res, next) {
   }
 }
 
+export async  function getBidbyUserId(req,res,next){
+  const {userId}=req.params;
+
+  if(!userId){
+    throw new CustomError("no userId is found",404)
+  }
+  const bid=await Bid.findById(userId)
+  if(!bid){
+    throw new CustomError("no bid is found",404)
+  }
+
+  res.status(200).json(bid)
+}
+
 // ===============================
 // GET SINGLE BID
 // ===============================

@@ -20,6 +20,9 @@ import cors from 'cors';
 import {initIo} from './src/sockets/io.js'
 import  swaggerUI from 'swagger-ui-express';
 import  swaggerSpec from './src/config/swagger.js';
+import logger from "./logger/index.js";
+import { requestLogger } from "./logger/requestLogger.js";
+import rateLimit from 'express-rate-limit'
 import {startCronJobs} from './src/cron-job/auctionFinalizer.cron.js'
 dotenv.config();
 
@@ -44,16 +47,20 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(errorHandler)
-
+const globalLimiter = rateLimit({
+    windowMs: 60000, 
+    max: 100, 
+  });
 
 const loadLiveAuctions = async () => {
     const auctions = await Auction.find({ status: "active" });
     auctions.forEach(addAuctionToCountdown);
  };
+app.use(requestLogger);
 
 loadLiveAuctions();
 startAuctionCountdown(io);
-
+app.use(globalLimiter)
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 app.use("/api/auth", Authrouter);
@@ -64,7 +71,10 @@ app.use("/api/Transcation",Transcationrouter)
 app.use("/api/Notification", Notificationrouter)
 app.use("/api/wallet",Walletrouter)
 
-
+app.use((err, req, res, next) => {
+    logger.error(`${err.message} - ${req.originalUrl}`);
+    return res.status(500).json({ error: "Internal Server Error" });
+});
 
 server.listen(PORT, () => {
     connectionDb();
