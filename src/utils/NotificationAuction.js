@@ -2,7 +2,7 @@ import Notification from "../models/Notification.model.js";
 import  Transcation from "../models/Transaction.model.js"
 import { getIo } from "../sockets/io.js";
 
-
+import { onlineUsers } from "./userTracker.js";
 
 
 export async function notifyAuctionActivation(auction) {
@@ -27,7 +27,18 @@ export async function notifyAuctionActivation(auction) {
     })
 }
 
+export async function sendNotificationToUser(io,userId,message){
+    const socketId=onlineUsers.get(userId);
 
+    if(!socketId){
+        console.log(`User ${userId} not online — notification skipped`);
+        return;
+    }
+    io.of("/notification").to(socketId).emit("notification",{
+        message,
+        time:new Date
+    })
+}
 export async function TranscationNoficiation(transcation){
     const io=getIo();
     const transactionNamespace = io.of('/transaction');

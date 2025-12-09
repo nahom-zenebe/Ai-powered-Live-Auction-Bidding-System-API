@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-
+import { onlineUsers } from "../utils/userTracker.js";
 
 dotenv.config();
 
@@ -43,12 +43,31 @@ export function InitializeIo(io) {
     BidNamespace.use(AuthenticationMiddleware)
 
    io.on("connection",(socket)=>{
+    const userId=socket.user?.userId;
+
+    onlineUsers.set(userId,socket.id)
     console.log(`${socket.id} user is joined`)
 
-    socket.on("disconnection",(socket)=>{
+    socket.on("disconnect",(socket)=>{
+        onlineUsers.delete(userId);
         console.log(`${socket.id} user is leave`)
 
     })
    })
+
+   notificationNamespace.on("connection",(socket)=>{
+    const userId=socket.user?.userId;
+
+    onlineUsers.set(userId,socket.id)
+    console.log(`${socket.id} user is joined`)
+
+    socket.on("disconnect",(socket)=>{
+        onlineUsers.delete(userId);
+        console.log(`${socket.id} user is leave`)
+
+    })
+   })
+
+   
    
 }

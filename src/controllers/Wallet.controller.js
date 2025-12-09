@@ -1,6 +1,8 @@
 import  {createWalletService,credit,  debit} from '../service/wallet.server'
 import Wallet from '../models/Wallet.model'
 import User from '../models/user.model'
+import {sendNotificationToUser} from '../utils/NotificationAuction.js'
+import { getIo } from "../sockets/io.js";
 
 
 
@@ -8,6 +10,7 @@ import User from '../models/user.model'
 export async function Createwallet(req,res){
 
     const {userId}=req.body;
+    const io=getIo()
 
     if(!userId){
         throw new CustomError("the user id is not known",404);
@@ -26,7 +29,7 @@ export async function Createwallet(req,res){
     }
 
     const newwallet=await Wallet.createWalletService(userId);
-
+    sendNotificationToUser(io,userId, "Your wallet was created")
     await newwallet.save()
     
     res.status(201).json(newwallet)
@@ -40,7 +43,7 @@ export async function creditWallet(req, res, next) {
       const { userId, amount, reason } = req.body;
   
       const updatedWallet = await credit(userId, amount, reason);
-  
+      sendNotificationToUser(io,userId, "Your wallet was credited")
       return res.status(200).json({
         success: true,
         message: "Wallet credited successfully",
@@ -57,7 +60,7 @@ export async function creditWallet(req, res, next) {
       const { userId, amount, reason } = req.body;
   
       const updatedWallet = await   debit(userId, amount, reason);
-  
+      sendNotificationToUser(io,userId, "Your wallet was debited")
       return res.status(200).json({
         success: true,
         message: "Wallet debit successfully",
@@ -74,7 +77,7 @@ export async function creditWallet(req, res, next) {
       const { userId, amount } = req.body;
   
       const updatedWallet = await lockAmount(userId, amount);
-  
+      sendNotificationToUser(io,userId, "Your amount lock due to bid ")
       return res.status(200).json({
         success: true,
         message: "Wallet lock Amount successfully",
@@ -91,7 +94,7 @@ export async function creditWallet(req, res, next) {
       const { userId, amount } = req.body;
   
       const updatedWallet = await unlockAmount(userId, amount);
-  
+      sendNotificationToUser(io,userId, "Your amount unlock due to bid ")
       return res.status(200).json({
         success: true,
         message: "Wallet unlock Amount successfully",

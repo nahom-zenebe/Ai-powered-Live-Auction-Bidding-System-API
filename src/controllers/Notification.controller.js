@@ -55,6 +55,27 @@ export async function getSingleNotification(req, res, next) {
 }
 
 
+export async function getnotificationbyUserId(req,res,next){
+  try{
+    const {user_id}=req.body;
+
+    if(!user_id){
+      throw new CustomError("no userId is found");
+    }
+    const  usernotification=await Notification.find({userId:user_id})
+
+    if(usernotification){
+      throw new CustomError("you don't have notification is found");
+    }
+
+    res.status(200).json(usernotification)
+
+  }
+  catch(error){
+    next(error);
+  }
+}
+
 export async function updateNotification(req, res, next) {
   try {
     const { notificationId } = req.params;
@@ -63,13 +84,13 @@ export async function updateNotification(req, res, next) {
       throw new CustomError("Notification ID is required", 400);
     }
 
-    const updatedCategory = await Notification.findByIdAndUpdate(
+    const notification = await Notification.findByIdAndUpdate(
     notificationId,
       req.body,
       { new: true, runValidators: true }
     );
 
-    if (!updatedCategory) {
+    if (!notification) {
       throw new CustomError("Notification not found", 404);
     }
 
