@@ -24,6 +24,8 @@ import logger from "./logger/index.js";
 import { requestLogger } from "./logger/requestLogger.js";
 import rateLimit from 'express-rate-limit'
 import { startCronJobs }  from './src/cron-job/index.js'
+import {connectRabbit, getChannel} from './src/config/rabbitmq.js'
+import {startBidConsumer} from './src/queues/bidQueue.consumer.js'
 dotenv.config();
 
 const PORT = process.env.PORT||5002
@@ -56,8 +58,15 @@ const loadLiveAuctions = async () => {
     const auctions = await Auction.find({ status: "active" });
     auctions.forEach(addAuctionToCountdown);
  };
+
+startBidConsumer()
+
+
+//adding logger middleware
 app.use(requestLogger);
 
+//connect rabbit queue
+await connectRabbit();
 loadLiveAuctions();
 startAuctionCountdown(io);
 app.use(globalLimiter)

@@ -5,6 +5,8 @@ import Notification from '../models/Notification.model.js'
 import {BidNotification} from '../utils/NotificationAuction.js'
 import { createTransactionService } from "../service/transaction.service.js";
 import { getIo } from "../sockets/io.js";
+import {connectRabbit, getChannel} from './src/config/rabbitmq.js'
+import { publishBidJob } from "../queues/bidQueue.producer.js";
 
 export async function createBid(req, res, next) {
   try {
@@ -58,10 +60,11 @@ export async function createBid(req, res, next) {
       user_id,
       bid_amount,
     });
-
+  
 
     const updatedLeaderBoard=await Bid.find(auction_id).sort({ bid_amount: -1 })
     .limit(limit);
+
 
 
 
@@ -80,6 +83,15 @@ export async function createBid(req, res, next) {
       auctionId: auction_id,
       leader:updatedLeaderBoard
     })
+
+
+    await publishBidJob({
+      user_id,
+      auction_id,
+      bid_amount,
+      timestamp: Date.now()
+    });
+    
 
     res.status(201).json({
       success: true,
