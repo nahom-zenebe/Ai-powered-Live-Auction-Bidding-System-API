@@ -1,6 +1,6 @@
-import  {createWalletService,credit,  debit} from '../service/wallet.server'
-import Wallet from '../models/Wallet.model'
-import User from '../models/user.model'
+import  {createWalletService,credit,  debit} from '../service/wallet.server.js'
+import Wallet from '../models/Wallet.model.js'
+import User from '../models/user.model.js'
 import {sendNotificationToUser} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
 

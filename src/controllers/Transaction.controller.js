@@ -1,7 +1,7 @@
 import Transaction from "../models/Transaction.model.js";
 import CustomError from "../utils/CustomError.js";
 import { getIo } from "../sockets/io.js";
-import { createTransactionService } from "../services/transaction.service.js";
+import { createTransactionService } from "../service/transaction.service.js";
 
 export async function createTransaction(req, res, next) {
   try {

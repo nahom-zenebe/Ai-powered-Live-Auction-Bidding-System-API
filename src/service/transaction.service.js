@@ -1,5 +1,5 @@
-import Transaction from "../models/Transaction.js";
-import { getIo } from "../socket.js";
+import Transaction from "../models/Transaction.model.js";
+import { getIo } from "../sockets/io.js";
 import CustomError from "../utils/CustomError.js";
 
 export async function createTransactionService({

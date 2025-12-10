@@ -1,8 +1,8 @@
 
 
 import express from 'express'
-import {DeleteAuction,aucitonLimiter,RatingAuction,VerifyAuction,getAuctionByStatus,activateAuction,UpdateAuction,getSingleAuction,getAllAuction,CreateAuction} from '../controllers/Auction.controllers.js'
-
+import {DeleteAuction,RatingAuction,VerifyAuction,getAuctionByStatus,activateAuction,UpdateAuction,getSingleAuction,getAllAuction,CreateAuction} from '../controllers/Auction.controllers.js'
+import {aucitonLimiter} from '../middlewares/RateLimiter.middleware.js'
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 
 const router = express.Router();

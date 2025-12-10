@@ -50,7 +50,7 @@ const walletSchema = new mongoose.Schema(
 );
 
 walletSchema.index({ userId: 1 });
-walletSchema.prev("validate",async function(next){
+walletSchema.pre("validate",async function(next){
     if(this. walletNumber) next()
 
 

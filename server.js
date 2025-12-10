@@ -23,7 +23,7 @@ import  swaggerSpec from './src/config/swagger.js';
 import logger from "./logger/index.js";
 import { requestLogger } from "./logger/requestLogger.js";
 import rateLimit from 'express-rate-limit'
-import {startCronJobs} from './src/cron-job/auctionFinalizer.cron.js'
+import { startCronJobs }  from './src/cron-job/index.js'
 dotenv.config();
 
 const PORT = process.env.PORT||5002

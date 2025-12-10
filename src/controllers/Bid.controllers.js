@@ -3,13 +3,9 @@ import CustomError from "../utils/CustomError.js";
 import Auction from '../models/Auction.model.js';
 import Notification from '../models/Notification.model.js'
 import {BidNotification} from '../utils/NotificationAuction.js'
-import { createTransactionService } from "../services/transaction.service.js";
-
-
+import { createTransactionService } from "../service/transaction.service.js";
 import { getIo } from "../sockets/io.js";
-// ===============================
-// CREATE BID
-// ===============================
+
 export async function createBid(req, res, next) {
   try {
     const { user_id, bid_amount } = req.body;
