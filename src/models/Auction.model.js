@@ -93,10 +93,7 @@ AuctionSchema.pre("save",function(next){
     if(this.start_time>=this.s)
     next()
 })
-AuctionSchema.index({ category: 1 });
-AuctionSchema.index({ seller_id: 1 });
-AuctionSchema.index({ start_time: 1 });
-AuctionSchema.index({ end_time: 1 });
+
 
 
 

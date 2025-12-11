@@ -63,10 +63,10 @@ startBidConsumer()
 
 
 //adding logger middleware
-app.use(requestLogger);
+// app.use(requestLogger);
 
 //connect rabbit queue
-await connectRabbit();
+// await connectRabbit();
 loadLiveAuctions();
 startAuctionCountdown(io);
 app.use(globalLimiter)

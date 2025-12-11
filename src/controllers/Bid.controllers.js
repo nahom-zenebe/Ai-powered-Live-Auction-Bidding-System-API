@@ -5,7 +5,7 @@ import Notification from '../models/Notification.model.js'
 import {BidNotification} from '../utils/NotificationAuction.js'
 import { createTransactionService } from "../service/transaction.service.js";
 import { getIo } from "../sockets/io.js";
-import {connectRabbit, getChannel} from './src/config/rabbitmq.js'
+import {connectRabbit, getChannel} from '../config/rabbitmq.js'
 import { publishBidJob } from "../queues/bidQueue.producer.js";
 
 export async function createBid(req, res, next) {

@@ -65,8 +65,6 @@ const transactionSchema = new mongoose.Schema(
   }
 );
 
-transactionSchema.index({ walletId: 1 });
-transactionSchema.index({ userId: 1 });
-transactionSchema.index({ type: 1 });
+
 
 export default mongoose.model("Transaction", transactionSchema);

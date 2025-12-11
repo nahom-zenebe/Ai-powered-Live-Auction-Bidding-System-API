@@ -50,7 +50,7 @@ export async function FinilizeAuction(){
                       WinnerAmount = highestBid.amount;
                 }
 
-                //Todo
+              
                 await debit(WinnerId,WinnerAmount)
                 const wallet=await WinnerId.findOne({userId:WinnerId})
 
@@ -86,7 +86,6 @@ export async function FinilizeAuction(){
             auction.current_winner =WinnerId;
             auction.current_bid=WinnerAmount; 
             await auction.save();
-
 
 
             }

@@ -76,8 +76,8 @@ export async function getAllAuction(req, res, next) {
   try {
     let { skip = 0, limit = 20 } = req.query;
 
-    skip = parseInt(skip, 10);
-    limit = parseInt(limit, 10);
+    skip = parseInt(skip, 20);
+    limit = parseInt(limit, 20);
 
     if (isNaN(skip) || isNaN(limit)) {
       return next(new CustomError("skip and limit must be numbers", 400));
@@ -188,11 +188,22 @@ export async function  VerifyAuction(req,res,next){
 
   }
   catch(error){
-    next(errorr)
+    next(error)
 
   }
 }
 
+
+export async function  statsauction(req,res,next){
+  try{
+    cons 
+
+  }
+  catch(error){
+    next(error)
+  }
+
+}
 
 // ===============================
 // UPDATE AUCTION
@@ -288,7 +299,4 @@ export async function RatingAuction(req,res,next){
     next(error)
 
   }
-
-
-
 }

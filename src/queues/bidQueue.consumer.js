@@ -1,5 +1,5 @@
-import { getChannel } from "../rabbitmq/connection.js";
-import { processBidService } from "../services/bid.service.js";
+import { getChannel } from "../config/rabbitmq.js";
+// import { processBidService } from "../service/";
 
 
 const QUEUE="bid_queue"
@@ -15,7 +15,7 @@ export async function startBidConsumer() {
         try {
           const job = JSON.parse(msg.content.toString());
     
-          await processBidService(job);
+          // await processBidService(job);
           channel.ack(msg);
     
         } catch (error) {

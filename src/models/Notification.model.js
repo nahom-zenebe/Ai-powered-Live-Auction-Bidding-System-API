@@ -45,8 +45,7 @@ const NotificationSchema = new mongoose.Schema(
 );
 
 
-NotificationSchema.index({auction_id:1})
-NotificationSchema.index({user_id:1})
+
 
 const Notificaiton= mongoose.model("Notification", NotificationSchema);
 
