@@ -29,10 +29,13 @@ export async function createCategory(req, res, next) {
 // ===============================
 export async function getAllCategories(req, res, next) {
   try {
-    const limit=req.query.limit
-    const skip=req.query.skip
-    skip = parseInt(skip, 10);
-    limit = parseInt(limit, 10);
+    
+    let { limit, skip } = req.query;
+
+   
+    limit = limit ? parseInt(limit, 10) : 10;
+    skip = skip ? parseInt(skip, 10) : 0;
+
     const categories = await Category.find().limit(limit).skip(skip);
 
     res.status(200).json({
@@ -44,6 +47,7 @@ export async function getAllCategories(req, res, next) {
     next(error);
   }
 }
+
 
 // ===============================
 // GET SINGLE CATEGORY
@@ -71,9 +75,7 @@ export async function getSingleCategory(req, res, next) {
   }
 }
 
-// ===============================
-// UPDATE CATEGORY
-// ===============================
+
 export async function updateCategory(req, res, next) {
   try {
     const { categoryId } = req.params;

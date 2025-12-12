@@ -8,7 +8,7 @@ import { getIo } from "../sockets/io.js";
 
 
 export async function Createwallet(req,res){
-
+    
     const {userId}=req.body;
     const io=getIo()
 
@@ -40,9 +40,16 @@ export async function Createwallet(req,res){
 
 export async function creditWallet(req, res, next) {
     try {
+      const session=await mongoose.startSession();
+      session.startTranscation();
+
       const { userId, amount, reason } = req.body;
   
-      const updatedWallet = await credit(userId, amount, reason);
+      const updatedWallet = await credit(userId, amount, reason).session(session);
+
+      await session.commitTranscation();
+      session.endSession();
+
       sendNotificationToUser(io,userId, "Your wallet was credited")
       return res.status(200).json({
         success: true,
@@ -50,6 +57,7 @@ export async function creditWallet(req, res, next) {
         wallet: updatedWallet,
       });
     } catch (err) {
+      session.endSession();
       next(err); 
     }
   }

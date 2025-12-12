@@ -31,15 +31,14 @@ export async function signup(req, res, next) {
     const accessToken = AccessToken({ id: newUser._id, role: newUser.role });
     const refreshToken = RefreshToken({ id: newUser._id, role: newUser.role });
 
-    res.cookie("TradecloneAI-Accesstoken", accessToken, {
+    res.cookie("Auctionplatform-Accesstoken", accessToken, {
       maxAge: 60 * 60 * 1000,
       httpOnly: true,
     });
-    res.cookie("TradecloneAI-Refreshtoken", refreshToken, {
+    res.cookie("Auctionplatform-Refreshtoken", refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
-
     res.status(201).json({
       user: {
         id: newUser._id,
@@ -61,13 +60,13 @@ export async function VerifyUser(req,res,next){
   try{
 
     const{ Address,Phone,age, GovermentId}=req.body
-    const {UserId}=req.params
+    const {userId}=req.params
 
     if(!Address||!Phone||!age||!GovermentId){
       throw new CustomError("all field are required")
     }
 
-    const findUser=await User.findByIdAndUpdate(UserId,{Address,Phone,age, GovermentId},{new:true})
+    const findUser=await User.findByIdAndUpdate(userId,{Address,Phone,age, GovermentId},{new:true})
 
     if (!findUser) {
       throw new CustomError("User not found", 404);
@@ -111,11 +110,11 @@ export async function login(req, res, next) {
       role: existingUser.role,
     });
 
-    res.cookie("TradecloneAI-Accesstoken", token, {
+    res.cookie("Auctionplatform-Accesstoken", accessToken, {
       maxAge: 60 * 60 * 1000,
       httpOnly: true,
     });
-    res.cookie("TradecloneAI-Refreshtoken", token, {
+    res.cookie("Auctionplatform-Refreshtoken", refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
@@ -125,7 +124,7 @@ export async function login(req, res, next) {
         name: existingUser.name,
         email: existingUser.email,
         role: existingUser.role,
-        subscriptions: existingUser.subscriptions,
+      
       },
       accessToken,
       refreshToken,

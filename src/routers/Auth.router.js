@@ -72,6 +72,6 @@ router.post("/login", login)
  *       200:
  *         description: Verification success
  */
-router.get("/verify/:id", VerifyUser)
+router.put("/verify/:userId", VerifyUser)
 router.get("/numberofUser", CountNumberofUser)
 export default router;

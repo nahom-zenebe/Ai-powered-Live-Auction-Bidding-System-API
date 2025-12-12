@@ -11,8 +11,8 @@ export async function notifyAuctionActivation(auction) {
 
 
     const saved=await Notification.create({
-        user_id:auction.user_id,
-        type: "auction",
+        user_id:auction.seller_id,
+        type: "NEW_AUCTION",
         auction_id:auction._id,
         title: auction.title,
         message: `Auction "${auction.title}" is now active!`
