@@ -1,5 +1,7 @@
 import express from 'express'
 import { login, signup, CountNumberofUser, VerifyUser } from '../controllers/Auth.controller.js'
+import {registerSchema,loginSchema} from '../validators/auth.schema.js'
+import {validatorMiddleware} from '../middlewares/validator.middleware.js'
 
 const router = express.Router();
 
@@ -31,7 +33,7 @@ const router = express.Router();
  *       201:
  *         description: User created successfully
  */
-router.post("/signup", signup)
+router.post("/signup",validatorMiddleware(registerSchema), signup)
 
 /**
  * @swagger
@@ -54,7 +56,7 @@ router.post("/signup", signup)
  *       200:
  *         description: Login successful
  */
-router.post("/login", login)
+router.post("/login",validatorMiddleware(loginSchema), login)
 
 /**
  * @swagger
