@@ -76,6 +76,7 @@ app.use((err, req, res, next) => {
     return res.status(500).json({ error: "Internal Server Error" });
 });
 
+
 server.listen(PORT, () => {
     // Moved DB connection inside listen for now, wrap in try/catch
     try {
@@ -86,3 +87,6 @@ server.listen(PORT, () => {
         console.error("Startup failed:", err);
     }
 });
+
+export default app;
+
