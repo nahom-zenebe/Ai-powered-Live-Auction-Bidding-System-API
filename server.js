@@ -16,6 +16,7 @@ import Auction from './src/models/Auction.model.js'
 import http from 'http'; import { Server } from 'socket.io';
 import morgan from 'morgan';
 import cors from 'cors';
+import helmet from 'helmet'
  import { initIo } from './src/sockets/io.js';
 import swaggerUI from 'swagger-ui-express';
 import swaggerSpec from './src/config/swagger.js';
@@ -52,14 +53,14 @@ const globalLimiter = rateLimit({
 });
 
 // Commented out async functions that may fail
-// const loadLiveAuctions = async () => {
-//     const auctions = await Auction.find({ status: "active" });
-//     auctions.forEach(addAuctionToCountdown);
-// };
-// startBidConsumer();
-// loadLiveAuctions();
-// startAuctionCountdown(io);
-
+ const loadLiveAuctions = async () => {
+    const auctions = await Auction.find({ status: "active" });
+    auctions.forEach(addAuctionToCountdown);
+ };
+startBidConsumer();
+loadLiveAuctions();
+startAuctionCountdown(io);
+app.use(helmet())
 app.use(globalLimiter);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 

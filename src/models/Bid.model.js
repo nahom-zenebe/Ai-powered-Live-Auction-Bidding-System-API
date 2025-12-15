@@ -17,6 +17,7 @@ const BidSchema=mongoose.Schema({
         min: 0,
         
     },
+    bidder_aggressiveness: { type: Number, default: 0 },
     bid:{
         type:Date,
         default:Date.now()

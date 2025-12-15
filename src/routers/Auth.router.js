@@ -1,5 +1,5 @@
 import express from 'express'
-import { login, signup, CountNumberofUser, VerifyUser } from '../controllers/Auth.controller.js'
+import { login, signup,statsInfo, CountNumberofUser, VerifyUser } from '../controllers/Auth.controller.js'
 import {registerSchema,loginSchema} from '../validators/auth.schema.js'
 import {validatorMiddleware} from '../middlewares/validator.middleware.js'
 
@@ -74,6 +74,7 @@ router.post("/login",validatorMiddleware(loginSchema), login)
  *       200:
  *         description: Verification success
  */
+router.get("/statsinfo",statsInfo)
 router.put("/verify/:userId", VerifyUser)
 router.get("/numberofUser", CountNumberofUser)
 export default router;

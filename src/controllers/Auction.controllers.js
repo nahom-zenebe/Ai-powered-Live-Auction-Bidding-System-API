@@ -4,6 +4,7 @@ import User from '../models/user.model.js';
 import { startAuctionCountdown, addAuctionToCountdown } from "../utils/auctionCountdown.js";
 import {notifyAuctionActivation} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
+
 // ===============================
 // CREATE AUCTION
 // ===============================
@@ -161,6 +162,7 @@ export async function getAuctionByStatus(req,res,next){
     next(error)
   }
 }
+
 
 export async function  VerifyAuction(req,res,next){
   try{

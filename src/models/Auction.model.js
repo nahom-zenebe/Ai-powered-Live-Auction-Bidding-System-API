@@ -37,10 +37,10 @@ const AuctionSchema = new mongoose.Schema({
         ref:"User",
         required:true
     },
-    bids: {
+    bids:[ {
         type:mongoose.Schema.Types.ObjectId,
         ref:"Bid"
-    },
+    }],
     rating:{
         type:Map,
         of:Number,
@@ -74,6 +74,7 @@ const AuctionSchema = new mongoose.Schema({
         ref: "User",
         default: null,
       },
+     
       
       is_verified:{
         type:Boolean,

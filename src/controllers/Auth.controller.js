@@ -2,7 +2,8 @@ import { AccessToken, RefreshToken } from "../utils/TokenGen.js";
 import User from '../models/user.model.js'
 import CustomError from "../utils/CustomError.js";
 import bcrypt from "bcrypt";
-
+import Auction from '../models/Auction.model.js'
+import Bid from '../models/Bid.model.js'
 export async function signup(req, res, next) {
   try {
     const { name, email, password, role } = req.body;
@@ -163,3 +164,98 @@ export async function CountNumberofUser(req,res,next){
 
 
 
+//============== seller dashboard================
+
+
+export async function statsInfo(req,res,next){
+  try{
+    const {userId}=req.body;
+    const finalamount=0;
+   //get number of auction user created 
+    const numberofAuction=await Auction.aggregate([
+      {$match:{seller_id:userId}},
+      {$count: 1}
+    ])
+   //get how much money does it make
+    const auctionended=await Auction.find({
+      seller_id:userId,
+      status:"ended"
+    })
+
+    for (var amount in auctionended){
+      finalamount+=amount.current_bid
+    }
+
+    //check status of each
+
+    const statusauction=await Auction.find([
+      {$match:{seller_id:userId}},
+      {$group:{
+        _id:"$status",
+        $count:{$sum:1}
+      }}
+    ]) 
+
+
+
+    res.status(200).json(numberofAuction,finalamount,statusauction)
+
+  }
+  catch(error){
+    next(error)
+  }
+}
+
+
+export async function AidataBidpredication(req,res,next){
+  const {AuctionId}=req.params;
+  
+  //get list of user bid_id
+  const biduser=await Bid.find({auction_id:AuctionId})
+  const bidId=biduser?._id
+
+  if(!biduser){
+    res.status(404).json("no biduser is found")
+  }
+
+  if(!AuctionId){
+    res.status(404).json("no auctionId is found")
+  }
+
+  const Auctiondata=await Auction.findOne({
+    AuctionId,
+    status:'active'
+  })
+
+  if(!Auctiondata){
+    res.status(404).json("no auction is found")
+  }
+
+  const num_competitors=Auctiondata.bids.length||0
+
+  const current_time=Date.now()
+  const end_time=new Date(Auction.end_time)
+  const time_to_close_sec=end_time-current_time
+  const current_highest_bid=Auctiondata.current_bid
+  
+  const bidder_aggressiveness=Auction.bidder_aggressiveness
+  let is_last_minute;
+
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+  if(diffMinutes===1){
+    is_last_minute=1
+  }
+  else{
+    is_last_minute=0
+  }
+
+
+
+  if(Auction.end_time-current_time)
+
+
+
+
+
+}
