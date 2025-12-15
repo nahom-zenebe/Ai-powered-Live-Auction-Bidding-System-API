@@ -4,6 +4,8 @@ import CustomError from "../utils/CustomError.js";
 import bcrypt from "bcrypt";
 import Auction from '../models/Auction.model.js'
 import Bid from '../models/Bid.model.js'
+
+
 export async function signup(req, res, next) {
   try {
     const { name, email, password, role } = req.body;
@@ -208,11 +210,13 @@ export async function statsInfo(req,res,next){
 
 
 export async function AidataBidpredication(req,res,next){
-  const {AuctionId}=req.params;
+  const {AuctionId,UserId}=req.params;
   
   //get list of user bid_id
   const biduser=await Bid.find({auction_id:AuctionId})
-  const bidId=biduser?._id
+  const bid_id=biduser?._id
+
+  const findbid=await Bid.find({ user_id:UserId})
 
   if(!biduser){
     res.status(404).json("no biduser is found")
@@ -230,16 +234,20 @@ export async function AidataBidpredication(req,res,next){
   if(!Auctiondata){
     res.status(404).json("no auction is found")
   }
-
+  const auction_id=Auctiondata._id
   const num_competitors=Auctiondata.bids.length||0
 
   const current_time=Date.now()
   const end_time=new Date(Auction.end_time)
   const time_to_close_sec=end_time-current_time
-  const current_highest_bid=Auctiondata.current_bid
-  
+  const current_highest_bid=Auctiondata.current_bid;
+
+  const largestuserbid=await Bid.find({user_id:UserId}).sort({ bid_amount:-1}).limit(1)
+  const bid_amount= largestuserbid.bid_amount;
   const bidder_aggressiveness=Auction.bidder_aggressiveness
   let is_last_minute;
+
+  const bidder_win_rate=findbid.bidder_win_rate;
 
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
@@ -252,9 +260,10 @@ export async function AidataBidpredication(req,res,next){
 
 
 
-  if(Auction.end_time-current_time)
+  //todo
+  //call the model to calculate the values
 
-
+  res.status(200).json(bid_id, auction_id,bid_amount,time_to_close_sec,current_highest_bid,num_competitors,bidder_win_rate,bidder_aggressiveness,is_last_minute)
 
 
 

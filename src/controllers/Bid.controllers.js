@@ -7,7 +7,7 @@ import { createTransactionService } from "../service/transaction.service.js";
 import { getIo } from "../sockets/io.js";
 import {connectRabbit, getChannel} from '../config/rabbitmq.js'
 import { publishBidJob } from "../queues/bidQueue.producer.js";
-import {calculatebidder_aggressivenes} from '../service/bidder_aggressivenes.js'
+import {calculatebidder_aggressivenes,calculate_bidder_win_rate} from '../service/Auction_metrics.js'
 
 export async function createBid(req, res, next) {
   try {
@@ -94,6 +94,7 @@ export async function createBid(req, res, next) {
     });
     
     await calculatebidder_aggressivenes(bid._id);
+    await calculate_bidder_win_rate(user_id)
 
     res.status(201).json({
       success: true,

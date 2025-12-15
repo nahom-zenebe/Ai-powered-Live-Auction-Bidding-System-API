@@ -5,6 +5,9 @@ import Bid from '../controllers/Bid.controllers'
 export async function calculatebidder_aggressivenes(bidder_id){
 
 const findAuction = await Auction.find({ bids: bidder_id }).populate("bids", "bid_amount");
+if(!findAuction){
+  res.status(404).json("no auction is found")
+}
 
 
 let total = 0;
@@ -31,4 +34,34 @@ const aggressiveness = (totalBids / maxTotalBids + averageBid / maxBidAmount) / 
 
 await Auction.updateMany({ bidder_id }, { bidder_aggressiveness: aggressiveness });
 
+}
+
+
+
+export async function calculate_bidder_win_rate(userId) {
+  try {
+   
+    const totalAuctions = await Auction.countDocuments({ bids: userId });
+
+    if (!totalAuctions) {
+      return { message: "No auctions found for this user", bidder_win_rate: 0 };
+    }
+
+    
+    const totalWins = await Auction.countDocuments({ current_winner: userId, status: "ended" });
+
+    
+    const bidder_win_rate = totalWins / totalAuctions;
+
+    
+    await Bid.updateMany(
+      { user_id: userId },      
+      { $set: { bidder_win_rate } }  
+    );
+    return { bidder_win_rate, totalAuctions, totalWins };
+
+  } catch (err) {
+    console.error("Error calculating bidder win rate:", err);
+    throw err;
+  }
 }

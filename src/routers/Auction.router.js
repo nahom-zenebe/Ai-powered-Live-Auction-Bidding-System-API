@@ -1,7 +1,7 @@
 
 
 import express from 'express'
-import {DeleteAuction,RatingAuction,VerifyAuction,getAuctionByStatus,activateAuction,UpdateAuction,getSingleAuction,getAllAuction,CreateAuction} from '../controllers/Auction.controllers.js'
+import {DeleteAuction,RatingAuction,VerifyAuction,getAuctionByStatus,activateAuction,AidataBidpredication,UpdateAuction,getSingleAuction,getAllAuction,CreateAuction} from '../controllers/Auction.controllers.js'
 import {aucitonLimiter} from '../middlewares/RateLimiter.middleware.js'
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 
@@ -15,6 +15,7 @@ router.delete('/:AuctionId',Authmiddleware,DeleteAuction)
 router.patch("/rating/:AuctionId",Authmiddleware,RatingAuction)
 router.patch("/:AuctionId",Authmiddleware,activateAuction)
 router.put('/:AuctionId',Authmiddleware,UpdateAuction)
+router.get('/AI-Auctiondata',Authmiddleware,AidataBidpredication)
 router.get("/getAuctionbyQuery",getAuctionByStatus)
 
 
