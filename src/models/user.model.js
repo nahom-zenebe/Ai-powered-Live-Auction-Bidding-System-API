@@ -41,7 +41,11 @@ const userSchema=new mongoose.Schema({
     },
     Profile_photo:{
         type:String
-    }
+    },
+    user_preference:[{
+        type:String,
+        enum: ["Electronics", "Art", "Vehicles", "Books", "Clothing", "Sports"]
+    }]
    
 },{
     timestamps:true

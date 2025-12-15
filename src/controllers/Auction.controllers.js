@@ -363,15 +363,17 @@ export async function AidataBidpredication(req,res,next){
 
 }
 
-// export async function AIcontentbasedRecommendation(req,res,next){
-//   const {user_id}=req.params
+export async function AIcontentbasedRecommendation(req,res,next){
+  const {user_id}=req.params
+
  
 
-//   if(!user_id){
-//     res.status(404).json("userid is not found")
-//   }
-// //todo
-// //perfroming the content based recommmnedation
-//   res.status(200).json(user_id)
+  if(!user_id){
+    res.status(404).json("userid is not found")
+  }
+  
+//todo
+//perfroming the content based recommmnedation
+  res.status(200).json(user_id)
 
-// }
+}

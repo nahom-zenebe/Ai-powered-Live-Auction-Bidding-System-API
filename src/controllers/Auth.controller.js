@@ -209,62 +209,41 @@ export async function statsInfo(req,res,next){
 }
 
 
-export async function AidataBidpredication(req,res,next){
-  const {AuctionId,UserId}=req.params;
-  
-  //get list of user bid_id
-  const biduser=await Bid.find({auction_id:AuctionId})
-  const bid_id=biduser?._id
 
-  const findbid=await Bid.find({ user_id:UserId})
+export async function setuppreference(req,res,next){
 
-  if(!biduser){
-    res.status(404).json("no biduser is found")
+  try{
+    const {preference}=req.body;
+    const {userId}=req.params
+
+    if(!userId){
+      throw new CustomError("there is no userid",404)
+    }
+
+    if(!preference||Array.isArray(preference)||preference.length===0){
+      throw new CustomError("there is no preference data ",404)
+    }
+
+    const user=await User.findOne(userId)
+
+    if(!user){
+      throw new CustomError("there is no user data ",404)
+    }
+
+
+    preference.forEach(pref=>{
+      user.user_preference=user.user_preference.filter(p=> p!==pref);
+
+      user.user_preference.unshift(pref)
+    })
+    
+    await User.save();
+    
+    res.status(200).json("preferenced saved successfully")
+
   }
-
-  if(!AuctionId){
-    res.status(404).json("no auctionId is found")
+  catch(err){
+   next(err)
   }
-
-  const Auctiondata=await Auction.findOne({
-    AuctionId,
-    status:'active'
-  })
-
-  if(!Auctiondata){
-    res.status(404).json("no auction is found")
-  }
-  const auction_id=Auctiondata._id
-  const num_competitors=Auctiondata.bids.length||0
-
-  const current_time=Date.now()
-  const end_time=new Date(Auction.end_time)
-  const time_to_close_sec=end_time-current_time
-  const current_highest_bid=Auctiondata.current_bid;
-
-  const largestuserbid=await Bid.find({user_id:UserId}).sort({ bid_amount:-1}).limit(1)
-  const bid_amount= largestuserbid.bid_amount;
-  const bidder_aggressiveness=Auction.bidder_aggressiveness
-  let is_last_minute;
-
-  const bidder_win_rate=findbid.bidder_win_rate;
-
-  const diffMinutes = Math.floor(diffMs / (1000 * 60));
-
-  if(diffMinutes===1){
-    is_last_minute=1
-  }
-  else{
-    is_last_minute=0
-  }
-
-
-
-  //todo
-  //call the model to calculate the values
-
-  res.status(200).json(bid_id, auction_id,bid_amount,time_to_close_sec,current_highest_bid,num_competitors,bidder_win_rate,bidder_aggressiveness,is_last_minute)
-
-
 
 }
