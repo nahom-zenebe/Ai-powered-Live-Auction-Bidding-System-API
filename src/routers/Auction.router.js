@@ -15,7 +15,7 @@ router.delete('/:AuctionId',Authmiddleware,DeleteAuction)
 router.patch("/rating/:AuctionId",Authmiddleware,RatingAuction)
 router.patch("/:AuctionId",Authmiddleware,activateAuction)
 router.put('/:AuctionId',Authmiddleware,UpdateAuction)
-router.get('/AI-Auctiondata',Authmiddleware,AidataBidpredication)
+router.get('/AI-Auctiondata/:AuctionId/:UserId',Authmiddleware,AidataBidpredication)
 router.get("/getAuctionbyQuery",getAuctionByStatus)
 
 
