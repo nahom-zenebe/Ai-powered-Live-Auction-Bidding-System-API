@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 
 
-
-
 const AuctionSchema = new mongoose.Schema({
     title:{
         type:String,
@@ -80,6 +78,11 @@ const AuctionSchema = new mongoose.Schema({
         type:Boolean,
         default:false
       },
+      isFavorites:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
+      }]
     //   ai_metadata: {
     //     predicted_final_price: { type: Number, default: null },
     //     risk_score: { type: Number, default: 0 }, // e.g. fraud risk

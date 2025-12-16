@@ -151,3 +151,22 @@ export async function deleteTransaction(req, res, next) {
     next(error);
   }
 }
+
+
+export async function getAllTransactionsofUser(req,res,next){
+  const {userId}=req.params
+
+  if(!userId){
+    throw new CustomError("there is no userid",404)
+
+  }
+  const userTranscations=await Transaction.findById({ userId})
+
+   if(!userTranscations){
+    throw new CustomError("you don't have any transcations",404)
+   }
+   
+   res.status(200).json(userTranscations);
+
+
+}

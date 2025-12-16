@@ -303,6 +303,44 @@ export async function RatingAuction(req,res,next){
 
   }
 }
+
+
+
+export async function isAuctionFavorites(req,res,next){
+
+  const {userId}=req.body;
+
+  if(!userId){
+    throw new CustomError("there is no userId found",404)
+  }
+
+  const AuctionFavorites=await Auction.findOne(userId)
+
+  
+  if(!AuctionFavorites){
+    throw new CustomError("there is no user doccument found",404)
+  }
+  for(let userid in AuctionFavorites.isFavorites){
+
+    if (userid in AuctionFavorites.isFavorites){
+
+      AuctionFavorites.isFavorites.shift(userid)
+    }
+    AuctionFavorites.isFavorites.unshift(userid)
+
+
+  }
+
+  res.status(200).json("succeddfully make auction favoriates")
+
+}
+
+
+
+
+
+
+
 export async function AidataBidpredication(req,res,next){
   const {AuctionId,UserId}=req.params;
   
@@ -364,7 +402,14 @@ export async function AidataBidpredication(req,res,next){
 }
 
 export async function AIcontentbasedRecommendation(req,res,next){
-  const {user_id}=req.params
+   
+  const listofuserId=await User.find()
+
+  const listofAuctionId=await Auction.find()
+
+
+  
+
 
  
 
@@ -375,5 +420,6 @@ export async function AIcontentbasedRecommendation(req,res,next){
 //todo
 //perfroming the content based recommmnedation
   res.status(200).json(user_id)
+
 
 }

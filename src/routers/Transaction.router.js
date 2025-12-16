@@ -1,5 +1,5 @@
 import express from 'express'
-import {createTransaction,updateTransaction,getSingleTransaction,getAllTransactions,deleteTransaction} from '../controllers/Transaction.controller.js'
+import {createTransaction,updateTransaction,getSingleTransaction,getAllTransactions,getAllTransactionsofUser,deleteTransaction} from '../controllers/Transaction.controller.js'
 import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 
 const router = express.Router();
@@ -10,7 +10,7 @@ router.get("/",Authmiddleware,getAllTransactions)
 router.get('/:TransactionId',Authmiddleware,getSingleTransaction)
 router.delete('/:TransactionId',Authmiddleware,deleteTransaction)
 router.put('/:TransactionId',Authmiddleware,updateTransaction)
-
+router.get("/getAllTransactionsofUser/:userId",getAllTransactionsofUser)
 
 
 export default router;
