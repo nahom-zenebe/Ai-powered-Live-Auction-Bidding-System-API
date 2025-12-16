@@ -1,6 +1,6 @@
 
-import Auction from '../controllers/Auction.controllers'
-import Bid from '../controllers/Bid.controllers'
+import Auction from "../models/Auction.model.js";
+import Bid from '../models/Bid.model.js'
 
 export async function calculatebidder_aggressivenes(bidder_id){
 

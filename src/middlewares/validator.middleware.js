@@ -1,4 +1,4 @@
-const validatorMiddleware = (schema) => (req, res, next) => {
+export const validatorMiddleware = (schema) => (req, res, next) => {
     const { error } = schema.validate(req.body, { abortEarly: false });
     if (error) {
       return res.status(400).json({
@@ -9,5 +9,5 @@ const validatorMiddleware = (schema) => (req, res, next) => {
     next();
   };
   
-  export default validatorMiddleware;
+
   
