@@ -48,7 +48,7 @@ const AuctionSchema = new mongoose.Schema({
         
     },
   
-    min_bid:{
+    start_price:{
         type:Number,
         default:0
 

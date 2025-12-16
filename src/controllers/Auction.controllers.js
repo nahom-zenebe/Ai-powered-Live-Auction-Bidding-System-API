@@ -19,7 +19,7 @@ export async function CreateAuction(req, res, next) {
       images,
       seller_id,
       bids,
-      min_bid,
+      start_price,
       current_bid,
       category_id,
       status,
@@ -42,7 +42,7 @@ export async function CreateAuction(req, res, next) {
       images,
       seller_id,
       bids,
-      min_bid,
+      start_price,
       current_bid,
       category_id,
       status,
@@ -76,7 +76,11 @@ export async function CreateAuction(req, res, next) {
 // ===============================
 export async function getAllAuction(req, res, next) {
   try {
+   
+
     let { skip = 0, limit = 20 } = req.query;
+
+
 
     skip = parseInt(skip, 20);
     limit = parseInt(limit, 20);
@@ -86,6 +90,8 @@ export async function getAllAuction(req, res, next) {
     }
 
     const auctions = await Auction.find().skip(skip).limit(limit);
+
+
 
     res.status(200).json({
       success: true,
@@ -267,7 +273,61 @@ export async function DeleteAuction(req, res, next) {
   }
 }
 
+//recommendation based on user prefrence
 
+export async function RecommendationAuction(req,res,next){
+  try{
+    const { userId } = req.body;
+
+    if (!userId) {
+      throw new CustomError("userId is required", 400);
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new CustomError("User not found", 404);
+    }
+
+    const auctions = await Auction.find({ auction_status: "active" });
+
+   const Recommendauctions=[];
+
+    for(const auction of  auctions){
+      let score=0;
+
+      //category matching
+      if(user.user_preference.includes(auction.category_id)){
+        score+=1
+      }
+
+      if(auction.start_price>=user.price_min &&auction.start_price<=user.price_max){
+        score+=1
+      }
+
+      if(score>0){
+        Recommendauctions.push([
+          auction,
+          score
+        ])
+      }
+
+    }
+
+        //sort them
+   Recommendauctions.sort((a,b)=>b.score-a.score)
+
+   res.status(200).json({
+    success: true,
+    data: recommendedAuctions
+  });
+
+
+  }
+  catch(error){
+    next(error)
+  }
+
+}
 
 export async function RatingAuction(req,res,next){
   try{

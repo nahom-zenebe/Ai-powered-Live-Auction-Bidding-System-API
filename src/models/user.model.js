@@ -42,9 +42,18 @@ const userSchema=new mongoose.Schema({
     Profile_photo:{
         type:String
     },
+    price_min:{
+        type:Number,
+        default:0
+    },
+    price_max:{
+        type:Number,
+        default:0
+    },
     user_preference:[{
-        type:String,
-        enum: ["Electronics", "Art", "Vehicles", "Books", "Clothing", "Sports"]
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category",
+   
     }]
    
 },{
