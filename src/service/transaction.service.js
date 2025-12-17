@@ -32,7 +32,7 @@ export async function createTransactionService({
 
 
 
-export async function createTranscationforstripe({walletId,user_id,stripe_id,amount,status}){
+export async function createTranscationforstripe({walletId,user_id,stripe_id,amount,status,type}){
   if(!walletId||!user_id||!stripe_id||!amount){
     throw new CustomError("there is no walletid or userid",404)
   }
@@ -43,7 +43,8 @@ export async function createTranscationforstripe({walletId,user_id,stripe_id,amo
     userId:user_id,
     amount,
     metadata:stripe_id,
-    status:status
+    status:status,
+    type:type
   });
 
 

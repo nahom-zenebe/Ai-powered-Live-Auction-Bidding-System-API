@@ -4,7 +4,10 @@ import User from '../models/user.model.js'
 import {sendNotificationToUser} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
 import Stripe from 'stripe';
+import Transcation from '../models/Transaction.model.js'
 import dotnev from 'dotenv';
+
+dotnev.config()
 
 
 const stripe=new Stripe(proccess.env.STRIPE_SECRET_KEY)
@@ -124,11 +127,13 @@ export async function creditWallet(req, res, next) {
  try{
   const {amountInToken,userId}=req.body;
 
+  const TOKEN_PRICE=parseInt(process.env.TOKEN_PRICE)
+
   if(!amountInToken||!userId){
     throw new CustomError("there is no amount or userId",404)
   }
   // 1token=$0.10
-  const amountInCents=amountInToken *10
+  const amountInCents=Math.round(amountInToken *TOKEN_PRICE)
 
   const paymentIntent=await stripe.paymentIntent.create({
     amount:amountInCents,
@@ -163,12 +168,31 @@ export async function creditWallet(req, res, next) {
       const paymentIntent = event.data.object;
       const userId = paymentIntent.metadata.userId;
       const tokensToAdd = parseInt(paymentIntent.metadata.amountInTokens);
+      const stripeId=paymentIntent.id
+      session.startTransaction();
 
-     await Wallet.findOneAndUpdate(
-      {userId:userId},
-      {$inc:{balance:tokensToAdd}}
-     )
-      cconsole.log(`✅ Success! Added ${tokensToAdd} tokens to User ${userId}`)
+
+      const findTranscation=await Transcation.find({metadata:stripeId}).session(session);
+     //prevent the stripe to make twice transactions
+      if(findTranscation &&findTranscation.status==="SUCCESS"){
+        console.log(`⚠️ Transaction ${stripeId} already processed. Skipping.`);
+        await session.endSession();
+        return res.json({ received: true });
+
+      }
+
+
+      await Wallet.findOneAndUpdate(
+        { userId: userId },
+        { $inc: { balance: tokenAmount } },
+        { session }
+    );
+
+     await createTranscationforstripe([wallet.id,userId,stripeId,tokensToAdd,status="SUCCESS",type="STRIPE_DEPOSIT"],{ session })
+
+
+     await session.commitTransaction();
+     console.log(`✅ Successfully added ${tokenAmount} tokens to User ${userId}`);
       
     }
     res.json({received: true});
