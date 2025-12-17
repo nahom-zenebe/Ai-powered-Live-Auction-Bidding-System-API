@@ -3,7 +3,11 @@ import Wallet from '../models/Wallet.model.js'
 import User from '../models/user.model.js'
 import {sendNotificationToUser} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
+import Stripe from 'stripe';
+import dotnev from 'dotenv';
 
+
+const stripe=new Stripe(proccess.env.STRIPE_SECRET_KEY)
 
 
 
@@ -112,3 +116,60 @@ export async function creditWallet(req, res, next) {
       next(err); 
     }
   }
+
+
+
+
+ export async  function Depositmoneyfromstripe(req,res,next){
+ try{
+  const {amountInToken,userId}=req.body;
+
+  if(!amountInToken||!userId){
+    throw new CustomError("there is no amount or userId",404)
+  }
+  // 1token=$0.10
+  const amountInCents=amountInToken *10
+
+  const paymentIntent=await stripe.paymentIntent.create({
+    amount:amountInCents,
+    currency:'usd',
+    metadata:{userId,amountInToken}
+  })
+  res.send({ clientSecret: paymentIntent.client_secret });
+
+ }
+
+ catch(error){
+  next(error)
+
+ }
+
+ }
+
+
+ export async function Stripewebhook(req,res,next){
+    const sig=req.headers['stripe-signature'];
+    let event;
+
+    try{
+      event=stripe.webhooks.constructEvent(req.body,sig,process.env.STRIPE_WEBHOOK_SECRET)
+
+    }
+    catch(error){
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if(event.type==="payment_intent.succeeded"){
+      const paymentIntent = event.data.object;
+      const userId = paymentIntent.metadata.userId;
+      const tokensToAdd = parseInt(paymentIntent.metadata.amountInTokens);
+
+     await Wallet.findOneAndUpdate(
+      {userId:userId},
+      {$inc:{balance:tokensToAdd}}
+     )
+      cconsole.log(`✅ Success! Added ${tokensToAdd} tokens to User ${userId}`)
+      
+    }
+    res.json({received: true});
+ }

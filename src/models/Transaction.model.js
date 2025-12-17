@@ -25,7 +25,8 @@ const transactionSchema = new mongoose.Schema(
         "BID_PAYMENT",
         "REFUND",
         "TRANSFER_IN",
-        "TRANSFER_OUT"
+        "TRANSFER_OUT",
+        "STRIPE_DEPOSIT"
       ],
     },
 

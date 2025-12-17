@@ -53,13 +53,13 @@ const globalLimiter = rateLimit({
 });
 
 // Commented out async functions that may fail
- const loadLiveAuctions = async () => {
-    const auctions = await Auction.find({ status: "active" });
-    auctions.forEach(addAuctionToCountdown);
- };
-startBidConsumer();
-loadLiveAuctions();
-startAuctionCountdown(io);
+//  const loadLiveAuctions = async () => {
+//     const auctions = await Auction.find({ status: "active" });
+//     auctions.forEach(addAuctionToCountdown);
+//  };
+// startBidConsumer();
+// loadLiveAuctions();
+// startAuctionCountdown(io);
 app.use(helmet())
 app.use(globalLimiter);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
