@@ -60,6 +60,30 @@ export async function TranscationNoficiation(transcation){
 }
 
 
+export async function AuctionFavoriteNotificaiton(auction){
+    const io=getIo();
+    const notificaitonNamespace= io.of('/notificaiton');
+
+
+    await auction.populate('isFavorites','_id username')
+
+
+    for (const user of auction.isFavorites){
+
+        const saved=await Notification.create({
+           user_id: user._id, 
+            type: "FavoriteAuction",
+            auction_id: auction._id,
+            title: auction.title,
+            message: `Auction "${auction.title}" is ending soon!`
+          })
+
+    }
+
+    notificationNamespace.to(user._id.toString()).emit("favouriteAuction", saved);
+
+}
+
 export async function BidNotification(bid){
     const io=getIo();
     const  notificationNamespace = io.of("/notification");

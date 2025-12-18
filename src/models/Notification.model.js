@@ -11,7 +11,7 @@ const NotificationSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["OUTBID", "WON", "AUCTION_END","NEW_AUCTION"],
+      enum: ["OUTBID", "WON","FavoriteAuction", "AUCTION_END","NEW_AUCTION"],
       required: true,
     },
 

@@ -203,16 +203,8 @@ export async function  VerifyAuction(req,res,next){
 }
 
 
-export async function  statsauction(req,res,next){
-  try{
-    cons 
 
-  }
-  catch(error){
-    next(error)
-  }
 
-}
 
 // ===============================
 // UPDATE AUCTION
