@@ -14,8 +14,8 @@ export async function createBid(req, res, next) {
     const { user_id, bid_amount } = req.body;
     const { auction_id}=req.params;
 
-    const {limit}=req.query
-    limit=parseInt(limit||20)
+    let { limit } = req.query;
+    limit = parseInt(limit) || 20;
     const io=getIo()
     const BidNamespace = io.of('/Bid');
 
@@ -87,11 +87,13 @@ export async function createBid(req, res, next) {
 
 
     await publishBidJob({
+      bid_id: bid._id,
       user_id,
       auction_id,
       bid_amount,
       timestamp: Date.now()
     });
+    
     
     await calculatebidder_aggressivenes(bid._id);
     await calculate_bidder_win_rate(user_id)

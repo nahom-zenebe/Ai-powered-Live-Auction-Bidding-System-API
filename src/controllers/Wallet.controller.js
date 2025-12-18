@@ -10,7 +10,7 @@ import dotnev from 'dotenv';
 dotnev.config()
 
 
-const stripe=new Stripe(proccess.env.STRIPE_SECRET_KEY)
+const stripe=new Stripe(process.env.STRIPE_API_KEY)
 
 
 

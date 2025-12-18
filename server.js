@@ -24,8 +24,8 @@ import logger from "./logger/index.js";
 // import { requestLogger } from "./logger/requestLogger.js";
 import rateLimit from 'express-rate-limit';
 // import { startCronJobs } from './src/cron-job/index.js';
-// import { connectRabbit, getChannel } from './src/config/rabbitmq.js';
-// import { startBidConsumer } from './src/queues/bidQueue.consumer.js';
+import { connectRabbit, getChannel } from './src/config/rabbitmq.js';
+import { startBidConsumer } from './src/queues/bidQueue.consumer.js';
 
 dotenv.config();
 
@@ -83,7 +83,10 @@ server.listen(PORT, () => {
     try {
         connectionDb();
         console.log(`Server running at port ${PORT}`);
-        // startCronJobs();
+         // startCronJobs();
+        //await connectRabbitMQ();
+        //startBidConsumer
+       
     } catch (err) {
         console.error("Startup failed:", err);
     }
