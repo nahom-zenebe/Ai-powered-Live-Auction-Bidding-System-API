@@ -18,6 +18,8 @@ services:
       - /app/node_modules
     depends_on:
       - mongo
+      - rabbitmq
+      - redis
 
   mongo:
     image: mongo:7
@@ -27,6 +29,19 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+
+  redis:
+    image: redis:7
+    container_name: auction_redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: auction_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
 volumes:
   mongo_data:
