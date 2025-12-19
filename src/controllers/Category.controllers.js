@@ -1,9 +1,7 @@
 import Category from "../models/Category.model.js";
 import CustomError from "../utils/CustomError.js";
 
-// ===============================
-// CREATE CATEGORY
-// ===============================
+
 export async function createCategory(req, res, next) {
   try {
     const { name, description } = req.body;
@@ -24,9 +22,6 @@ export async function createCategory(req, res, next) {
   }
 }
 
-// ===============================
-// GET ALL CATEGORIES
-// ===============================
 export async function getAllCategories(req, res, next) {
   try {
     
@@ -49,9 +44,7 @@ export async function getAllCategories(req, res, next) {
 }
 
 
-// ===============================
-// GET SINGLE CATEGORY
-// ===============================
+
 export async function getSingleCategory(req, res, next) {
   try {
     const { categoryId } = req.params;

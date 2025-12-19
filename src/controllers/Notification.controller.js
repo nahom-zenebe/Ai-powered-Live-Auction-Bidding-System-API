@@ -2,48 +2,62 @@ import Notification from "../models/Notification.model.js";
 import CustomError from "../utils/CustomError.js";
 import { getIo } from "../sockets/io.js";
 
+/**
+ * Create notification
+ */
 export async function createNotification(req, res, next) {
   try {
-    const { user_id,type,message,auction_id,metadata } = req.body;
+    const { userId, type, message, auctionId, metadata } = req.body;
 
-    const io=getIo()
-    const  notificationNamespace = io.of("/notification");
-  
+    if (!userId || !type || !message) {
+      throw new CustomError("Missing required fields", 400);
+    }
 
-    const notifciation = new Notification({ user_id,type,message,auction_id,metadata });
-    await notifciation.save();
+    const notification = await Notification.create({
+      userId,
+      type,
+      message,
+      auctionId,
+      metadata,
+    });
 
-    notificationNamespace.emit("create-message", notifciation)
-    res.status(201).json(notifciation);
+    // Emit real-time event
+    const io = getIo();
+    io.of("/notification").to(userId.toString()).emit("notification:new", notification);
+
+    res.status(201).json(notification);
   } catch (error) {
     next(error);
   }
 }
-export async function getAllNotification(req, res, next) {
+
+/**
+ * Get all notifications (admin)
+ */
+export async function getAllNotifications(req, res, next) {
   try {
-    const limit=req.query.limit
-    const skip=req.query.skip
-    skip = parseInt(skip, 20);
-    limit = parseInt(limit, 20);
-    const notification = await Notification.find().limit(limit).skip(skip);
+    const limit = Number(req.query.limit) || 20;
+    const skip = Number(req.query.skip) || 0;
 
-    res.status(200).json(notification);
+    const notifications = await Notification.find()
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(notifications);
   } catch (error) {
     next(error);
   }
 }
 
-
-export async function getSingleNotification(req, res, next) {
+/**
+ * Get notification by ID
+ */
+export async function getNotificationById(req, res, next) {
   try {
     const { notificationId } = req.params;
 
-    if (!notificationId) {
-      throw new CustomError("Notification ID is required", 400);
-    }
-
-    const notification = await Notification.findById(categoryId);
-
+    const notification = await Notification.findById(notificationId);
     if (!notification) {
       throw new CustomError("Notification not found", 404);
     }
@@ -54,38 +68,31 @@ export async function getSingleNotification(req, res, next) {
   }
 }
 
+/**
+ * Get notifications for a user
+ */
+export async function getNotificationsByUser(req, res, next) {
+  try {
+    const { userId } = req.params;
 
-export async function getnotificationbyUserId(req,res,next){
-  try{
-    const {user_id}=req.body;
+    const notifications = await Notification.find({ userId })
+      .sort({ createdAt: -1 });
 
-    if(!user_id){
-      throw new CustomError("no userId is found");
-    }
-    const  usernotification=await Notification.find({userId:user_id})
-
-    if(usernotification){
-      throw new CustomError("you don't have notification is found");
-    }
-
-    res.status(200).json(usernotification)
-
-  }
-  catch(error){
+    res.status(200).json(notifications);
+  } catch (error) {
     next(error);
   }
 }
 
+/**
+ * Update notification
+ */
 export async function updateNotification(req, res, next) {
   try {
     const { notificationId } = req.params;
 
-    if (!notificationId) {
-      throw new CustomError("Notification ID is required", 400);
-    }
-
     const notification = await Notification.findByIdAndUpdate(
-    notificationId,
+      notificationId,
       req.body,
       { new: true, runValidators: true }
     );
@@ -100,25 +107,21 @@ export async function updateNotification(req, res, next) {
   }
 }
 
-
+/**
+ * Delete notification
+ */
 export async function deleteNotification(req, res, next) {
   try {
     const { notificationId } = req.params;
 
-    if (!notificationId) {
-      throw new CustomError("Notification ID is required", 400);
-    }
-
-    const deletednotification = await Notification.findByIdAndDelete(notificationId);
-
-    if (!deletednotification) {
+    const notification = await Notification.findByIdAndDelete(notificationId);
+    if (!notification) {
       throw new CustomError("Notification not found", 404);
     }
 
     res.status(200).json({
       success: true,
       message: "Notification deleted successfully",
-      
     });
   } catch (error) {
     next(error);
