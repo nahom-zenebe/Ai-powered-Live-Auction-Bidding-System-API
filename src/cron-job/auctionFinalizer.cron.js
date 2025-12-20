@@ -3,7 +3,8 @@ import Bid from "../models/Bid.model.js";
 import {debit,credit} from "../service/wallet.server.js";
 import { createTransactionService } from "../service/transaction.service.js";
 import { schedule } from "./scheduler.js";
-
+import { sendEmail} from '../utils/emailservice.js';
+import {BidWinnerEmailTemplate} from '../utils/emailTemplates.js'
 
 export async function FinilizeAuction(){
     schedule("*/1 * * * *", async () => {
@@ -83,9 +84,21 @@ export async function FinilizeAuction(){
 
 
             auction.status="ended"
-            auction.current_winner =WinnerId;
+            auction.current_winner=WinnerId;
             auction.current_bid=WinnerAmount; 
             await auction.save();
+
+            const findwinner=await User.findOne(WinnerId)
+
+
+            const { subject, html, text } = BidWinnerEmailTemplate(findwinner.name,auction.title,auction.current_bid)
+
+            await sendEmail(
+                findwinner.email,
+                subject,
+                html,
+                text
+              );
 
 
             }
