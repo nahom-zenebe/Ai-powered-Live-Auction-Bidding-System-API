@@ -235,6 +235,24 @@ export async function LeaderBoard(req, res, next) {
   }
 }
 
+export async function getBidsByUser(req,res,next){
+  try{
+    const {userId}=req.params;
+
+    if(!userId){
+      throw new CustomError("no userId is found",404)
+    }
+    const finduserbid=await Bid.find({ user_id:userId})
+
+    res.status(200).json(finduserbid)
+
+  }
+  catch(error){
+    next(error)
+  }
+}
+
+
 
 // ===============================
 // DELETE BID
