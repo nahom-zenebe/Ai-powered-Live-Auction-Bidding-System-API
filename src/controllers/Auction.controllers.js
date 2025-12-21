@@ -5,6 +5,7 @@ import User from '../models/user.model.js';
 import { startAuctionCountdown, addAuctionToCountdown } from "../utils/auctionCountdown.js";
 import {notifyAuctionActivation} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
+import axios from 'axios'
 
 // ===============================
 // CREATE AUCTION
@@ -443,11 +444,27 @@ export async function AidataBidpredication(req,res,next){
   }
 
 
+  const features=[
+    bid_amount,
+    current_highest_bid,
+    num_competitors,
+    bidder_win_rate,
+    bidder_aggressiveness,
+  ]
 
-  //todo
-  //call the model to calculate the values
 
-  res.status(200).json(bid_id, auction_id,bid_amount,time_to_close_sec,current_highest_bid,num_competitors,bidder_win_rate,bidder_aggressiveness,is_last_minute)
+  const aiResponse=await axios.post('http://localhost:8000/predict',{
+    features: features
+  })
+  res.status(200).json({
+    prediction: aiResponse.data.target === 1 ? "Win" : "Loss",
+    probability: aiResponse.data.probability, 
+    details: {
+      bid_amount,
+      time_to_close_sec,
+      is_last_minute
+    }
+  });
 
 
 

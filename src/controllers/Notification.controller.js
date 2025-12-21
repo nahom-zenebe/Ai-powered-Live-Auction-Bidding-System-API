@@ -7,14 +7,14 @@ import { getIo } from "../sockets/io.js";
  */
 export async function createNotification(req, res, next) {
   try {
-    const { userId, type, message, auctionId, metadata } = req.body;
+    const { user_id, type, message, auctionId, metadata } = req.body;
 
-    if (!userId || !type || !message) {
+    if (!user_id || !type || !message) {
       throw new CustomError("Missing required fields", 400);
     }
 
     const notification = await Notification.create({
-      userId,
+      user_id,
       type,
       message,
       auctionId,
@@ -23,7 +23,7 @@ export async function createNotification(req, res, next) {
 
     // Emit real-time event
     const io = getIo();
-    io.of("/notification").to(userId.toString()).emit("notification:new", notification);
+    io.of("/notification").to(user_id.toString()).emit("notification:new", notification);
 
     res.status(201).json(notification);
   } catch (error) {

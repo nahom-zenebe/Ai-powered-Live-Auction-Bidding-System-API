@@ -30,7 +30,7 @@ const NotificationSchema = new mongoose.Schema(
     auction_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Auction",
-      default: null
+   
     },
 
     

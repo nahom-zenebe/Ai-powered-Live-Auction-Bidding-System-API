@@ -22,7 +22,7 @@ export async function credit(userId,amount,reason){
     if(amount<=0){
         throw new CustomError("amount should not be null",400)
     }
-    const wallet = await Wallet.findOne({ userId });
+    const wallet = await Wallet.findOne({ user_id:userId });
   if (!wallet) {
     throw new CustomError("User wallet not found", 404);
   }
@@ -38,7 +38,7 @@ export async function credit(userId,amount,reason){
 
   await Transaction.create({
     walletId: wallet._id,
-    userId,
+    user_id:userId,
     type: "DEPOSIT",
     amount,
     previousBalance,

@@ -33,11 +33,7 @@ export async function getAllCategories(req, res, next) {
 
     const categories = await Category.find().limit(limit).skip(skip);
 
-    res.status(200).json({
-      success: true,
-      count: categories.length,
-      data: categories,
-    });
+    res.status(200).json(categories);
   } catch (error) {
     next(error);
   }

@@ -8,7 +8,7 @@ import {Authmiddleware} from '../middlewares/Auth.middleware.js'
 const router = express.Router();
 
 router.post("/",CreateAuction)
-router.get("/",Authmiddleware,getAllAuction)
+router.get("/",getAllAuction)
 router.patch("/verfiyAuction/:AuctionId/:userId",Authmiddleware,VerifyAuction)
 router.get('/:AuctionId',Authmiddleware,getSingleAuction)
 router.delete('/:AuctionId',Authmiddleware,DeleteAuction)

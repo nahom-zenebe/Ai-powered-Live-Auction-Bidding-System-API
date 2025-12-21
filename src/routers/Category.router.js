@@ -46,8 +46,8 @@ const router = express.Router();
  */
 router.post(
   "/",
-  Authmiddleware,
-  validatorMiddleware(createcategorySchema),
+  // Authmiddleware,
+  // validatorMiddleware(createcategorySchema),
   createCategory
 );
 

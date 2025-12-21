@@ -6,6 +6,7 @@ import { getIo } from "../sockets/io.js";
 import Stripe from 'stripe';
 import Transcation from '../models/Transaction.model.js'
 import dotnev from 'dotenv';
+import CustomError from "../utils/CustomError.js";
 
 dotnev.config()
 
@@ -14,36 +15,38 @@ const stripe=new Stripe(process.env.STRIPE_API_KEY)
 
 
 
-export async function Createwallet(req,res){
-    
-    const {userId}=req.body;
-    const io=getIo()
+export async function Createwallet(req, res, next) {
+  try {
+    const { userId } = req.body;
+    const io = getIo();
 
-    if(!userId){
-        throw new CustomError("the user id is not known",404);
-
+    if (!userId) {
+      throw new CustomError("the user id is not known", 404);
     }
 
-    const userwallet=await User.findOne({userId})
+    const userwallet = await User.findById(userId);
 
-
-    if(!userwallet){
-         throw new CustomError("the user  is not known",404);
+    if (!userwallet) {
+      throw new CustomError("the user is not known", 404);
     }
 
-    if( userwallet.isVerified===false){
-        throw new CustomError("first you have to verify before creating wallet",400);
+    if (userwallet.isVerified === false) {
+      throw new CustomError(
+        "first you have to verify before creating wallet",
+        400
+      );
     }
 
-    const newwallet=await Wallet.createWalletService(userId);
-    sendNotificationToUser(io,userId, "Your wallet was created")
-    await newwallet.save()
-    
-    res.status(201).json(newwallet)
+    const newwallet = await createWalletService(userId);
 
+    sendNotificationToUser(io, userId, "Your wallet was created");
 
-
+    res.status(201).json(newwallet);
+  } catch (err) {
+    next(err);
+  }
 }
+
 
 export async function creditWallet(req, res, next) {
     try {

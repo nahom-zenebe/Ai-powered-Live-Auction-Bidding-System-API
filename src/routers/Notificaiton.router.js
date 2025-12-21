@@ -48,7 +48,9 @@ const router = express.Router();
  *       201:
  *         description: Notification created
  */
-router.post("/", Authmiddleware, createNotification);
+router.post("/", 
+  // Authmiddleware,
+   createNotification);
 
 /**
  * @swagger
