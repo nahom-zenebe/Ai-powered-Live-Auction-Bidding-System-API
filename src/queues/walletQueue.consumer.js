@@ -10,6 +10,9 @@ export async function startwalletConsumer(){
     await channel.assertQueue(QUEUE,{durable:true})
     console.log("👷 Bid Worker listening for jobs...");
 
+
+    await channel.prefetch(1);
+
    channel.consume(QUEUE,async(msg)=>{
     try{
         const job=JSON.parse(msg.content.toString())

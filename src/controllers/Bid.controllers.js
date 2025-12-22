@@ -8,16 +8,20 @@ import { getIo } from "../sockets/io.js";
 import {connectRabbit, getChannel} from '../config/rabbitmq.js'
 import { publishBidJob } from "../queues/bidQueue.producer.js";
 import {calculatebidder_aggressivenes,calculate_bidder_win_rate} from '../service/Auction_metrics.js'
+import {outbidNotification} from '../utils/NotificationAuction.js'
 
 export async function createBid(req, res, next) {
   try {
     const { user_id, bid_amount } = req.body;
     const { auction_id}=req.params;
 
+  
+
     let { limit } = req.query;
     limit = parseInt(limit) || 20;
     const io=getIo()
     const BidNamespace = io.of('/Bid');
+    const  notificationNamespace = io.of("/notification");
 
    const userAcccount=await Transcation.findById( user_id);
 
@@ -74,6 +78,10 @@ export async function createBid(req, res, next) {
     if(bid_amount <= Auction.current_bid|| bid_amount < Auction.min_bid){
       throw new CustomError("Bid too low",400);
     }
+ 
+
+    await outbidNotification(io,current_winner,`You have been  outbid in auction named ${Auction.title}`);
+
     Auction.current_bid = bid_amount;
     Auction.current_winner =  user_id;
     Auction.bids=bid

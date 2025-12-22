@@ -41,13 +41,14 @@ export async function sendemailtobiddersconsumer(){
 
   await channel.assertQueue(QUEUE_email, { durable: true });
     console.log("👷 Bid Worker listening for jobs...");
-
+   //assing one task for the queue channel
+    await channel.prefetch(1);
 
     channel.consume(QUEUE_email,async(msg)=>{
       try{
         const job = JSON.parse(msg.content.toString());
         const { templateType, email, data } = job;
-        
+
         let template;
 
         if (templateType === 'bidWinner') {

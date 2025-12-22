@@ -27,6 +27,29 @@ export async function notifyAuctionActivation(auction) {
     })
 }
 
+export async function outbidNotification(io,userId,message){
+
+    const socketId=onlineUsers.get(userId);
+
+    if(!socketId){
+        console.log(`User ${userId} not online — notification skipped`);
+        return;
+    }
+
+   
+
+    const saved=await Notification.create({
+        user_id: userId, 
+         type: "OUTBID",
+         auction_id: "",
+         title: auction.title,
+         message: message
+       })
+
+       io.of("/notification").to(userId).emit("outbidnotification",saved)
+}
+
+
 export async function sendNotificationToUser(io,userId,message){
     const socketId=onlineUsers.get(userId);
 
@@ -34,11 +57,17 @@ export async function sendNotificationToUser(io,userId,message){
         console.log(`User ${userId} not online — notification skipped`);
         return;
     }
-    io.of("/notification").to(socketId).emit("notification",{
-        message,
-        time:new Date
-    })
+    const saved=await Notification.create({
+        user_id: userId, 
+         type: "CUSTOM",
+         auction_id: "",
+         title: auction.title,
+         message: message
+       })
+    io.of("/notification").to(socketId).emit("notification",saved)
 }
+
+
 export async function TranscationNoficiation(transcation){
     const io=getIo();
     const transactionNamespace = io.of('/transaction');
