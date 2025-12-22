@@ -5,6 +5,7 @@ import { createTransactionService } from "../service/transaction.service.js";
 import { schedule } from "./scheduler.js";
 import { sendEmail} from '../utils/emailservice.js';
 import {emailTemplates} from '../utils/emailTemplates.js'
+import {sendemailtobidders} from '../queues/bidQueue.producer.js'
 
 export async function FinilizeAuction(){
     schedule("*/1 * * * *", async () => {
@@ -84,14 +85,15 @@ export async function FinilizeAuction(){
                 const auction=await Auction.find(bids.auction_id)
                 const findlossers=await User.find(bids.user_id)
 
-            const {subject,html,text}=emailTemplates.BidLosserEmailTemplate(findlossers.name,auction.title,auction.current_bid)
-    
-            await sendEmail(
-                findwinner.email,
-                subject,
-                html,
-                text
-              );
+                await sendemailtobidders({
+                    templateType: 'bidLoser', 
+                    email: loserUser.email,
+                    data: {
+                        userName: loserUser.name,
+                        auctionName: auctionData.title,
+                        bidAmount: bids.amount
+                    }
+                });
 
             }
 
@@ -102,17 +104,15 @@ export async function FinilizeAuction(){
             await auction.save();
 
             const findwinner=await User.findOne(WinnerId)
-
-
-            const { subject, html, text } = emailTemplates.BidWinnerEmailTemplate(findwinner.name,auction.title,auction.current_bid)
-
-            await sendEmail(
-                findwinner.email,
-                subject,
-                html,
-                text
-              );
-
+            
+            await sendemailtobidders({
+                templateType: 'bidWinner',
+                email: findwinner.email,
+                data: {
+                userName: findwinner.name,
+                auctionName: auction.title,
+                bidAmount: auction.current_bid
+                }})
 
             }
             
