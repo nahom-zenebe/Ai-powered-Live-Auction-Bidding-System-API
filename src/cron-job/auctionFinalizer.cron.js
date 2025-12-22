@@ -4,7 +4,7 @@ import {debit,credit} from "../service/wallet.server.js";
 import { createTransactionService } from "../service/transaction.service.js";
 import { schedule } from "./scheduler.js";
 import { sendEmail} from '../utils/emailservice.js';
-import {BidWinnerEmailTemplate} from '../utils/emailTemplates.js'
+import {emailTemplates} from '../utils/emailTemplates.js'
 
 export async function FinilizeAuction(){
     schedule("*/1 * * * *", async () => {
@@ -71,7 +71,7 @@ export async function FinilizeAuction(){
             })
 
             for(const bids of LossBider){
-                //Todo
+            
                 await credit(bids.user_id,bids.amount)
                 await createTransactionService({
                     user_id:  bids.user_id,
@@ -80,6 +80,19 @@ export async function FinilizeAuction(){
                     status:"COMPLETED",
                     metadata: { bidsId: bids._id }
                 })
+
+                const auction=await Auction.find(bids.auction_id)
+                const findlossers=await User.find(bids.user_id)
+
+            const {subject,html,text}=emailTemplates.BidLosserEmailTemplate(findlossers.name,auction.title,auction.current_bid)
+    
+            await sendEmail(
+                findwinner.email,
+                subject,
+                html,
+                text
+              );
+
             }
 
 
@@ -91,7 +104,7 @@ export async function FinilizeAuction(){
             const findwinner=await User.findOne(WinnerId)
 
 
-            const { subject, html, text } = BidWinnerEmailTemplate(findwinner.name,auction.title,auction.current_bid)
+            const { subject, html, text } = emailTemplates.BidWinnerEmailTemplate(findwinner.name,auction.title,auction.current_bid)
 
             await sendEmail(
                 findwinner.email,
