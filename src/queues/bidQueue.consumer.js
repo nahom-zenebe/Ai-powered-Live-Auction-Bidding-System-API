@@ -14,6 +14,9 @@ export async function startBidConsumer() {
     const channel = getChannel();
 
     await channel.assertQueue(QUEUE, { durable: true });
+    
+    channel.prefetch(1);
+
     console.log("👷 Bid Worker listening for jobs...");
 
     channel.consume(QUEUE, async (msg) => {

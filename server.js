@@ -26,7 +26,7 @@ import rateLimit from 'express-rate-limit';
 // import { startCronJobs } from './src/cron-job/index.js';
 import { connectRabbit, getChannel } from './src/config/rabbitmq.js';
 import { startBidConsumer } from './src/queues/bidQueue.consumer.js';
-
+import { startnotificationConsumer} from './src/queues/notificationQueue.consumer.js'
 dotenv.config();
 
 const PORT = process.env.PORT || 5002;
@@ -85,7 +85,8 @@ server.listen(PORT, () => {
         console.log(`Server running at port ${PORT}`);
          // startCronJobs();
         //await connectRabbitMQ();
-        //startBidConsumer
+        //startBidConsumer()
+        // startnotificationConsumer()
        
     } catch (err) {
         console.error("Startup failed:", err);
