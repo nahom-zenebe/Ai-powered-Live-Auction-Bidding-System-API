@@ -209,6 +209,21 @@ export async function statsInfo(req,res,next){
 }
 
 
+export async function logout(req,res,next){
+  try{
+
+    res.clearCookie("Auctionplatform-Accesstoken");
+    res.clearCookie("Auctionplatform-Refreshtoken");
+    res.status(200).json("user logged out")
+
+  }
+  catch(error){
+    next(error)
+  }
+
+}
+
+
 
 export async function setuppreference(req,res,next){
 
