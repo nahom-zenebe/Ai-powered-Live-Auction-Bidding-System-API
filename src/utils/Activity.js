@@ -8,7 +8,6 @@ export async function RecordActivity(activitys){
         if(!activitys){
             throw new Error();
         }
-
         const newActivitys=await Activity(activitys)
 
         await newActivitys.save()

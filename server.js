@@ -7,6 +7,7 @@ import Categoryrouter from './src/routers/Category.router.js'
 import Bidrouter from './src/routers/Bid.router.js'
 import Walletrouter from './src/routers/Wallet.router.js'
 import Notificationrouter from './src/routers/Notificaiton.router.js'
+import Activityrouter from "./src/routers/Activity.router.js";
 import Transcationrouter from './src/routers/Transaction.router.js'
 import cookieParser from 'cookie-parser';
 import { errorHandler } from './src/middlewares/errorHandler.js'
@@ -65,6 +66,7 @@ app.use(globalLimiter);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 app.use("/api/auth", Authrouter);
+app.use("/api/activity",Activityrouter)
 app.use("/api/auction", Auctionrouter);
 app.use("/api/category", Categoryrouter);
 app.use("/api/Bid", Bidrouter);

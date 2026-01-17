@@ -6,6 +6,7 @@ import { startAuctionCountdown, addAuctionToCountdown } from "../utils/auctionCo
 import {notifyAuctionActivation} from '../utils/NotificationAuction.js'
 import { getIo } from "../sockets/io.js";
 import axios from 'axios'
+import RecordActivity from '../service/Auction_metrics.js'
 
 // ===============================
 // CREATE AUCTION
@@ -60,7 +61,7 @@ export async function CreateAuction(req, res, next) {
     await  notifyAuctionActivation(newAuction);
 
 
-
+    RecordActivity({})
 
     res.status(201).json({
       success: true,
