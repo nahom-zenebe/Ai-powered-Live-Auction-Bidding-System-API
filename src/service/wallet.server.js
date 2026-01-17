@@ -2,6 +2,9 @@
 import Wallet from '../models/Wallet.model.js'
 import CustomError from "../utils/CustomError.js";
 import { getIo } from "../sockets/io.js";
+
+
+
 export async function createWalletService(user_id){
 
  if (!user_id ) {

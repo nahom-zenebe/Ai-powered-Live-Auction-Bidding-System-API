@@ -32,6 +32,7 @@ export function InitializeIo(io) {
     const notificationNamespace = io.of('/notification');
     const auctionNamespace = io.of('/auction');
     const transactionNamespace = io.of('/transaction');
+    const categoryNamespace=io.of('category')
     const walletNamespace=io.of("/wallet")
     const BidNamespace = io.of('/Bid');
 
@@ -41,6 +42,7 @@ export function InitializeIo(io) {
     walletNamespace.use(AuthenticationMiddleware)
     transactionNamespace.use(AuthenticationMiddleware);
     BidNamespace.use(AuthenticationMiddleware)
+    categoryNamespace.use(AuthenticationMiddleware);
 
    io.on("connection",(socket)=>{
     const userId=socket.user?.userId;
