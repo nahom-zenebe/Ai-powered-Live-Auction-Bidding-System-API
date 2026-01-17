@@ -9,6 +9,7 @@ import {connectRabbit, getChannel} from '../config/rabbitmq.js'
 import { publishBidJob } from "../queues/bidQueue.producer.js";
 import {calculatebidder_aggressivenes,calculate_bidder_win_rate} from '../service/Auction_metrics.js'
 import {outbidNotification} from '../utils/NotificationAuction.js'
+import RecordActivity from '../service/Auction_metrics.js'
 
 export async function createBid(req, res, next) {
   try {
@@ -105,6 +106,17 @@ export async function createBid(req, res, next) {
     
     await calculatebidder_aggressivenes(bid._id);
     await calculate_bidder_win_rate(user_id)
+
+
+    RecordActivity({
+      user: user_id,
+      action: "BID_AUCTION",
+      auction: auction_id,
+      context: {
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+      },
+    });
 
     res.status(201).json({
       success: true,
@@ -268,6 +280,7 @@ export async function getBidsByUser(req,res,next){
 export async function deleteBid(req, res, next) {
   try {
     const { bidId } = req.params;
+    const user_id=req.user._id
 
     if (!bidId) {
       throw new CustomError("Bid ID is required", 400);
@@ -278,6 +291,19 @@ export async function deleteBid(req, res, next) {
     if (!deletedBid) {
       throw new CustomError("Bid not found", 404);
     }
+
+    const auction_id= deletedBid.auction_id
+
+
+    RecordActivity({
+      user: user_id,
+      action: "DELETE_BID",
+      auction: auction_id,
+      context: {
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+      },
+    });
 
     res.status(200).json({
       success: true,

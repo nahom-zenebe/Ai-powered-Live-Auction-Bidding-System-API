@@ -1,10 +1,12 @@
 import Category from "../models/Category.model.js";
 import CustomError from "../utils/CustomError.js";
+import RecordActivity from '../service/Auction_metrics.js'
 
 
 export async function createCategory(req, res, next) {
   try {
     const { name, description } = req.body;
+    const user_id=req.user._id
 
     if (!name) {
       throw new CustomError("Category name is required", 400);
@@ -12,6 +14,16 @@ export async function createCategory(req, res, next) {
 
     const category = new Category({ name, description });
     await category.save();
+
+    RecordActivity({
+      user: user_id,
+      action: "CREATED_CATEGORY",
+      auction:"",
+      context: {
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+      },
+    });
 
     res.status(201).json({
       success: true,

@@ -23,12 +23,16 @@ const ActivitySchema = new mongoose.Schema(
       ref: "Auction",
       index: true,
     },
-    ipAddress:{
-        type:String
+    context: {
+        ipAddress: {
+          type: String,
+        },
+  
+        userAgent: {
+          type: String,
+        },
+       
     },
-    device: {
-        type: String, 
-      },
  
     message: {
       type: String,

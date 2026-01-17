@@ -30,6 +30,7 @@ export async function CreateAuction(req, res, next) {
 
     const io=getIo()
     const auctionNamespace = io.of("/auction");
+    const userId=req.user._id
   
     if (!title || !description || !start_time || !end_time || !category_id) {
       throw new CustomError("Required fields cannot be empty", 400);
@@ -59,9 +60,18 @@ export async function CreateAuction(req, res, next) {
     auctionNamespace.emit("send-auction",newAuction)
 
     await  notifyAuctionActivation(newAuction);
+   const auctionId=newAuction._id;
 
-
-    RecordActivity({})
+    RecordActivity({
+      user: userId,
+      action: "AUCTION_CREATED",
+      auction: auctionId,
+      context: {
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+      },
+    });
+    
 
     res.status(201).json({
       success: true,
@@ -255,6 +265,17 @@ export async function DeleteAuction(req, res, next) {
     if (!deletedAuction) {
       throw new CustomError("Auction not found", 404);
     }
+
+    RecordActivity({
+      user: userId,
+      action: "AUCTION_DELETED",
+      auction: AuctionId,
+      context: {
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+      },
+    });
+    
 
     res.status(200).json({
       success: true,
