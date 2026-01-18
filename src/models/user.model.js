@@ -50,6 +50,11 @@ const userSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
+    watchlist:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Auction",
+        
+      }],
     user_preference:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Category",

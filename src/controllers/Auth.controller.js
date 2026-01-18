@@ -262,3 +262,44 @@ export async function setuppreference(req,res,next){
   }
 
 }
+
+export async function watchlist(req, res, next) {
+  try {
+    const { auctionId } = req.body;
+    const userId = req.user.userId;
+
+    if (!auctionId || !userId) {
+      throw new CustomError("AuctionId or userId missing", 400);
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new CustomError("User not found", 404);
+    }
+
+    const isInWatchlist = user.watchlist.includes(auctionId);
+
+    if (isInWatchlist) {
+
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { watchlist: auctionId } }
+      );
+    } else {
+   
+      await User.findByIdAndUpdate(
+        userId,
+        { $addToSet: { watchlist: auctionId } }
+      );
+    }
+
+    res.status(200).json({
+      message: isInWatchlist
+        ? "Removed from watchlist"
+        : "Added to watchlist",
+    });
+  } catch (err) {
+    next(err);
+  }
+}

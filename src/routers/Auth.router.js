@@ -1,5 +1,5 @@
 import express from 'express'
-import { login, signup,logout,statsInfo,setuppreference, CountNumberofUser, VerifyUser } from '../controllers/Auth.controller.js'
+import { login, signup,logout,statsInfo,setuppreference,watchlist, CountNumberofUser, VerifyUser } from '../controllers/Auth.controller.js'
 import {registerSchema,loginSchema} from '../validators/auth.schema.js'
 import {validatorMiddleware} from '../middlewares/validator.middleware.js'
 
@@ -77,6 +77,7 @@ router.post("/login",validatorMiddleware(loginSchema), login)
 router.post("/logout",logout)
 router.get("/statsinfo",statsInfo)
 router.put("/verify/:userId", VerifyUser)
+router.patch("/updatewatchlist/:userId",watchlist)
 router.get("/numberofUser", CountNumberofUser)
 router.patch("/updateprefrence/:userId",setuppreference)
 export default router;
